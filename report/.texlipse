@@ -1,0 +1,14 @@
+#TeXlipse project settings
+#Tue Feb 12 06:02:13 EST 2013
+markTmpDer=true
+builderNum=2
+outputDir=build
+makeIndSty=
+bibrefDir=
+outputFormat=pdf
+tempDir=tmp
+mainTexFile=main.tex
+outputFile=BagoullaReport.pdf
+langSpell=en
+markDer=true
+srcDir=src
