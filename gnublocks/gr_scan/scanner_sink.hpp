@@ -85,6 +85,7 @@ class scanner_sink : public gr_block
 				float bands1[m_vector_length]; //fine window bands
 				float bands2[m_vector_length]; //coarse window bands
 
+				// So bands0 is just the fftshift of the data, and freqs becomes the cooresponding frequencies.  So you could do plot(freqs, bands0)
 				Rearrange(bands0, freqs, m_centre_freq_1, m_bandwidth0); //organize the buffer into a convenient order (saves to bands0)
 				GetBands(bands0, bands1, m_bandwidth1); //apply the fine window (saves to bands1)
 				GetBands(bands0, bands2, m_bandwidth2); //apply the coarse window (saves to bands2)
@@ -161,8 +162,7 @@ class scanner_sink : public gr_block
 								hours, minutes, seconds, (freqs[max] + freqs[min]) / 2000000.0, (freqs[max] - freqs[min])/1000.0, bands1[peak], diffs[peak]);
 						}
 					}
-				}
-				else {
+				} else {
 					if (diffs[i] >= m_threshold){ //we found a signal!
 						peak = i;
 						sig = true;
@@ -171,7 +171,9 @@ class scanner_sink : public gr_block
 			}
 		}
 		
-		
+		/**
+		 * I should double check to make sure this works right, looks like he's transposing min and max on the calls to it.
+		 */
 		bool TrySignal(double min, double max)
 		{
 			double mid = (min + max)/2.0; //calculate the midpoint of the signal
@@ -212,6 +214,10 @@ class scanner_sink : public gr_block
 			}
 		}
 		
+		/**
+		 * This function is going to take in a bandwidth and will do a moving average across the entire FFT window
+		 * As the window slowly moves across the FFT's length, it averages in the current value of the FFT.
+		 */
 		void GetBands(float *powers, float *bands, unsigned int bandwidth)
 		{
 			double samplewidth = m_bandwidth0/(double)m_vector_length; //the width in Hz of each sample
