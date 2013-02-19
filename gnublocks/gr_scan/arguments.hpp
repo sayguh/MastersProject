@@ -18,6 +18,7 @@
 
 #include <stdlib.h>
 #include <argp.h>
+#include <string>
 
 class Arguments
 {
@@ -33,7 +34,8 @@ class Arguments
 			sample_rate(2000000.0),
 			fft_width(1024.0),
 			step(-1.0),
-			ptime(-1.0)
+			ptime(-1.0),
+			fileName("outputFile.txt")
 		{
 			argp_parse (&argp_i, argc, argv, 0, 0, this);
 		}
@@ -43,6 +45,11 @@ class Arguments
 			return avg_size;
 		}
 		
+		std::string get_fileName()
+		{
+			return fileName;
+		}
+
 		double get_bandwidth1()
 		{
 			return bandwidth1;
@@ -147,6 +154,9 @@ class Arguments
 				case 'p':
 					ptime = atof(arg);
 					break;
+				case 'n':
+					fileName = arg;
+					break;
 				case ARGP_KEY_ARG:
 					if (state->arg_num > 0){
 						argp_usage (state);
@@ -177,6 +187,7 @@ class Arguments
 		double fft_width;
 		double step;
 		double ptime;
+		std::string fileName;
 };
 /**
 avg_size(1000),
@@ -203,6 +214,7 @@ argp_option Arguments::options[] = {
 	{"fft-width", 'w', "COUNT", 0, "Width of FFT in samples [1024]"},
 	{"step", 'z', "FREQ", 0, "Increment step in MHz [1/4 Sample Rate]"},
 	{"time", 'p', "TIME", 0, "Time in seconds to scan on each frequency [-1]"},
+	{"file-name", 'n', "FILE", 0, "File nam for hits to be written to [outputFile.txt]"},
 	{0}
 };
 argp Arguments::argp_i = {options, s_parse_opt, 0, 0};

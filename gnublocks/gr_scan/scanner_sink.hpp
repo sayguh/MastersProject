@@ -21,9 +21,12 @@
 #include <utility>
 #include <iostream>
 #include <fstream>
+#include <sstream>
+#include <iostream>
 
 #include <boost/shared_ptr.hpp>
 
+#include <string>
 #include <gr_block.h>
 #include <gr_io_signature.h>
 #include <osmosdr_source_c.h>
@@ -32,7 +35,7 @@ class scanner_sink : public gr_block
 {
 	public:
 		scanner_sink(osmosdr_source_c_sptr source, unsigned int vector_length, double centre_freq_1, double centre_freq_2, double bandwidth0, double bandwidth1, double bandwidth2,
-				double step, unsigned int avg_size, double spread, double threshold, double ptime) :
+				double step, unsigned int avg_size, double spread, double threshold, double ptime, std::string fileName) :
 			gr_block ("scanner_sink",
 				gr_make_io_signature (1, 1, sizeof (float) * vector_length),
 				gr_make_io_signature (0, 0, 0)),
@@ -51,9 +54,12 @@ class scanner_sink : public gr_block
 			m_threshold(threshold), //threshold in dB for discovery
 			m_spread(spread), //minumum distance between radio signals (overlapping scans might produce slightly different frequencies)
 			m_time(ptime), //the amount of time to listen on the same frequency for
-			m_start_time(time(0)) //the start time of the scan (useful for logging/reporting/monitoring)
+			m_start_time(time(0)), //the start time of the scan (useful for logging/reporting/monitoring)
+		    m_fileName(fileName)
 		{
 			ZeroBuffer();
+			filestr.open (m_fileName.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
+
 		}
 
 		virtual ~scanner_sink()
@@ -92,12 +98,6 @@ class scanner_sink : public gr_block
 				GetBands(bands0, bands1, m_bandwidth1); //apply the fine window (saves to bands1)
 				GetBands(bands0, bands2, m_bandwidth2); //apply the coarse window (saves to bands2)
 
-
-//				for (unsigned int i = 0; i < m_vector_length; i++) {
-//					fprintf(stderr, "%f ", bands0[i]);
-//				}
-//				fprintf(stderr, "\n");
-
 				PrintSignals(freqs, bands1, bands2);
 
 				m_count = 0; //next time, we're starting from scratch - so note this
@@ -131,8 +131,6 @@ class scanner_sink : public gr_block
 			unsigned int minutes = (t % 3600) / 60;
 			unsigned int seconds = t % 60;
 
-
-			fprintf(stderr, "Test2 \n");
 
 			//Print that we finished scanning something
 			fprintf(stderr, "%02u:%02u:%02u: Finished scanning %f MHz - %f MHz\n",
@@ -170,6 +168,19 @@ class scanner_sink : public gr_block
 
 						/* Print the signal if it's a genuine hit */
 						if (TrySignal(freqs[max], freqs[min])){
+							filestr.precision(2);
+							filestr << hours
+									<<":" << minutes
+									<< ":" << seconds
+									<< ": Found signal: at "
+									<< (freqs[max] + freqs[min])/2000000.0
+									<< "MHz of width "
+									<< (freqs[max] - freqs[min])/1000.0
+									<< "kHz, peak power "
+									<< bands1[peak]
+									<< "dB (difference "
+									<< diffs[peak]
+									<< "dB)" << std::endl;
 							fprintf(stderr, "[+] %02u:%02u:%02u: Found signal: at %f MHz of width %f kHz, peak power %f dB (difference %f dB)\n",
 								hours, minutes, seconds, (freqs[max] + freqs[min]) / 2000000.0, (freqs[max] - freqs[min])/1000.0, bands1[peak], diffs[peak]);
 						}
@@ -233,11 +244,7 @@ class scanner_sink : public gr_block
 		void GetBands(float *powers, float *bands, unsigned int bandwidth)
 		{
 			double samplewidth = m_bandwidth0/(double)m_vector_length; //the width in Hz of each sample
-			fprintf(stderr, "sample width = %f \n", samplewidth);
-
 			unsigned int bandwidth_samples = bandwidth/samplewidth; //the number of samples in our window
-			fprintf(stderr, "bandwidth samples = %f \n", bandwidth_samples);
-
 
 			for (unsigned int i = 0; i < m_vector_length; i++){ //we're averaging, so start with 0
 				bands[i] = 0.0;
@@ -279,12 +286,14 @@ class scanner_sink : public gr_block
 		double m_spread;
 		double m_time;
 		time_t m_start_time;
+		std::string m_fileName;
+		std::fstream filestr;
 };
 
 /* Shared pointer thing gnuradio is fond of */
 typedef boost::shared_ptr<scanner_sink> scanner_sink_sptr;
 scanner_sink_sptr make_scanner_sink(osmosdr_source_c_sptr source, unsigned int vector_length, double centre_freq_1, double centre_freq_2, double bandwidth0, double bandwidth1, double bandwidth2,
-	double step, unsigned int avg_size, double spread, double threshold, double ptime)
+	double step, unsigned int avg_size, double spread, double threshold, double ptime, std::string fileName)
 {
-	return boost::shared_ptr<scanner_sink>(new scanner_sink(source, vector_length, centre_freq_1, centre_freq_2, bandwidth0, bandwidth1, bandwidth2, step, avg_size, spread, threshold, ptime));
+	return boost::shared_ptr<scanner_sink>(new scanner_sink(source, vector_length, centre_freq_1, centre_freq_2, bandwidth0, bandwidth1, bandwidth2, step, avg_size, spread, threshold, ptime, fileName));
 }

@@ -28,12 +28,13 @@
 #include <gr_single_pole_iir_filter_ff.h>
 #include <gr_nlog10_ff.h>
 #include "scanner_sink.hpp"
+#include <string>
 
 class TopBlock : public gr_top_block
 {
 	public:
 		TopBlock(double centre_freq_1, double centre_freq_2, double sample_rate, double fft_width, double bandwidth1, double bandwidth2,
-				double step, unsigned int avg_size, double spread, double threshold, double ptime) :
+				double step, unsigned int avg_size, double spread, double threshold, double ptime, std::string fileName) :
 			gr_top_block("Top Block"),
 			/*vector_length(sample_rate/fft_width),*/  // This doesn't make any sense to me, the vectorLength should just be the given fftWidth
 			vector_length(fft_width),
@@ -46,7 +47,7 @@ class TopBlock : public gr_top_block
 			iir(gr_make_single_pole_iir_filter_ff(1.0, vector_length)),
 			lg(gr_make_nlog10_ff(10, vector_length, -20 * log10(vector_length) -10 * log10(GetWindowPower()/vector_length))),
 			/* Sink - this does most of the interesting work */
-			sink(make_scanner_sink(source, vector_length, centre_freq_1, centre_freq_2, sample_rate, bandwidth1, bandwidth2, step, avg_size, spread, threshold, ptime))
+			sink(make_scanner_sink(source, vector_length, centre_freq_1, centre_freq_2, sample_rate, bandwidth1, bandwidth2, step, avg_size, spread, threshold, ptime, fileName))
 		{
 
 			printRunParams(centre_freq_1, centre_freq_2, sample_rate, fft_width, bandwidth1, bandwidth2, step, avg_size, spread, threshold, ptime);
