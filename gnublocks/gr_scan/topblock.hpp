@@ -35,7 +35,8 @@ class TopBlock : public gr_top_block
 		TopBlock(double centre_freq_1, double centre_freq_2, double sample_rate, double fft_width, double bandwidth1, double bandwidth2,
 				double step, unsigned int avg_size, double spread, double threshold, double ptime) :
 			gr_top_block("Top Block"),
-			vector_length(sample_rate/fft_width),
+			/*vector_length(sample_rate/fft_width),*/  // This doesn't make any sense to me, the vectorLength should just be the given fftWidth
+			vector_length(fft_width),
 			window(GetWindow(vector_length)),
 			source(osmosdr_make_source_c()), /* OsmoSDR Source */
 			stv(gr_make_stream_to_vector(sizeof(float)*2, vector_length)), /* Stream to vector */
@@ -47,13 +48,16 @@ class TopBlock : public gr_top_block
 			/* Sink - this does most of the interesting work */
 			sink(make_scanner_sink(source, vector_length, centre_freq_1, centre_freq_2, sample_rate, bandwidth1, bandwidth2, step, avg_size, spread, threshold, ptime))
 		{
+
+			printRunParams(centre_freq_1, centre_freq_2, sample_rate, fft_width, bandwidth1, bandwidth2, step, avg_size, spread, threshold, ptime);
+
 			/* Set up the OsmoSDR Source */
 			source->set_sample_rate(sample_rate);
 			source->set_center_freq(centre_freq_1);
 			source->set_freq_corr(0.0);
 			source->set_gain_mode(false);
-			source->set_gain(10.0);
-			source->set_if_gain(20.0);
+			source->set_gain(30);
+			source->set_if_gain(25.0);
 			
 			/* Set up the connections */
 			connect(source, 0, stv, 0);
@@ -90,6 +94,21 @@ class TopBlock : public gr_top_block
 				total += (*it) * (*it);
 			}
 			return total;
+		}
+
+		void printRunParams(double centerFreq1, double centerFreq2, double sampleRate, double fftWidth, double narrowBW, double courseBW, double stepSize, unsigned int averageSize, double spreadSize, double thresholdDB, double pauseTime)
+		{
+			printf("Start Freq: \t%f\n", centerFreq1);
+			printf("Stop Freq: \t%f\n", centerFreq2);
+			printf("Sample Rate: \t%f\n", sampleRate);
+			printf("FFT Width: \t%f\n", fftWidth);
+			printf("Narrow BW: \t%f\n", narrowBW);
+			printf("Course BW: \t%f\n", courseBW);
+			printf("Step Size: \t%f\n", stepSize);
+			printf("FFT Average Size: \t%i\n", averageSize);
+			printf("Spread delta: \t%f\n", spreadSize);
+			printf("Threshold: \t%f\n", thresholdDB);
+			printf("Pause Time: \t%f\n", pauseTime);
 		}
 
 		size_t vector_length;

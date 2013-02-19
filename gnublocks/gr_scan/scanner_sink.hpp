@@ -19,13 +19,14 @@
 #include <ctime>
 #include <set>
 #include <utility>
+#include <iostream>
+#include <fstream>
 
 #include <boost/shared_ptr.hpp>
 
 #include <gr_block.h>
 #include <gr_io_signature.h>
 #include <osmosdr_source_c.h>
-
 
 class scanner_sink : public gr_block
 {
@@ -63,6 +64,7 @@ class scanner_sink : public gr_block
 	private:
 		virtual int general_work(int noutput_items, gr_vector_int &ninput_items, gr_vector_const_void_star &input_items, gr_vector_void_star &output_items)
 		{
+
 			for (int i = 0; i < ninput_items[0]; i++){
 				ProcessVector(((float *)input_items[0]) + i * m_vector_length);
 			}
@@ -89,6 +91,13 @@ class scanner_sink : public gr_block
 				Rearrange(bands0, freqs, m_centre_freq_1, m_bandwidth0); //organize the buffer into a convenient order (saves to bands0)
 				GetBands(bands0, bands1, m_bandwidth1); //apply the fine window (saves to bands1)
 				GetBands(bands0, bands2, m_bandwidth2); //apply the coarse window (saves to bands2)
+
+
+//				for (unsigned int i = 0; i < m_vector_length; i++) {
+//					fprintf(stderr, "%f ", bands0[i]);
+//				}
+//				fprintf(stderr, "\n");
+
 				PrintSignals(freqs, bands1, bands2);
 
 				m_count = 0; //next time, we're starting from scratch - so note this
@@ -121,6 +130,9 @@ class scanner_sink : public gr_block
 			unsigned int hours = t / 3600;
 			unsigned int minutes = (t % 3600) / 60;
 			unsigned int seconds = t % 60;
+
+
+			fprintf(stderr, "Test2 \n");
 
 			//Print that we finished scanning something
 			fprintf(stderr, "%02u:%02u:%02u: Finished scanning %f MHz - %f MHz\n",
@@ -158,7 +170,7 @@ class scanner_sink : public gr_block
 
 						/* Print the signal if it's a genuine hit */
 						if (TrySignal(freqs[max], freqs[min])){
-							printf("[+] %02u:%02u:%02u: Found signal: at %f MHz of width %f kHz, peak power %f dB (difference %f dB)\n",
+							fprintf(stderr, "[+] %02u:%02u:%02u: Found signal: at %f MHz of width %f kHz, peak power %f dB (difference %f dB)\n",
 								hours, minutes, seconds, (freqs[max] + freqs[min]) / 2000000.0, (freqs[max] - freqs[min])/1000.0, bands1[peak], diffs[peak]);
 						}
 					}
@@ -221,7 +233,12 @@ class scanner_sink : public gr_block
 		void GetBands(float *powers, float *bands, unsigned int bandwidth)
 		{
 			double samplewidth = m_bandwidth0/(double)m_vector_length; //the width in Hz of each sample
+			fprintf(stderr, "sample width = %f \n", samplewidth);
+
 			unsigned int bandwidth_samples = bandwidth/samplewidth; //the number of samples in our window
+			fprintf(stderr, "bandwidth samples = %f \n", bandwidth_samples);
+
+
 			for (unsigned int i = 0; i < m_vector_length; i++){ //we're averaging, so start with 0
 				bands[i] = 0.0;
 			}

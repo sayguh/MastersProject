@@ -31,7 +31,7 @@ class Arguments
 			centre_freq_1(87000000.0),
 			centre_freq_2(108000000.0),
 			sample_rate(2000000.0),
-			fft_width(1000.0),
+			fft_width(1024.0),
 			step(-1.0),
 			ptime(-1.0)
 		{
@@ -87,7 +87,7 @@ class Arguments
 		{
 			return fft_width;
 		}
-		
+
 		double get_step()
 		{
 			if (step < 0.0){
@@ -178,19 +178,31 @@ class Arguments
 		double step;
 		double ptime;
 };
-
+/**
+avg_size(1000),
+bandwidth1(25000.0),
+bandwidth2(-1.0),
+spread(50000.0),
+threshold(3.0),
+centre_freq_1(87000000.0),
+centre_freq_2(108000000.0),
+sample_rate(2000000.0),
+fft_width(1000.0),
+step(-1.0),
+ptime(-1.0)
+*/
 argp_option Arguments::options[] = {
-	{"average", 'a', "COUNT", 0, "Average over COUNT samples"},
-	{"fine-bandwidth", 'f', "FREQ", 0, "Bandwidth of the fine window in kHz"},
-	{"coarse-bandwidth", 'c', "FREQ", 0, "Bandwidth of the coarse window in kHz"},
-	{"spread", 's', "FREQ", 0, "Minimum frequency between detected signals"},
-	{"threshold", 't', "POWER", 0, "Threshold for the difference between the coarse and fine filtered signals in dB"},
-	{"start-frequency", 'x', "FREQ", 0, "Start frequency in MHz"},
-	{"end-frequency", 'y', "FREQ", 0, "End frequency in MHz"},
-	{"sample-rate", 'r', "RATE", 0, "Samplerate in Msamples/s"},
-	{"fft-width", 'w', "COUNT", 0, "Width of FFT in samples"},
-	{"step", 'z', "FREQ", 0, "Increment step in MHz"},
-	{"time", 'p', "TIME", 0, "Time in seconds to scan on each frequency"},
+	{"average", 'a', "COUNT", 0, "Average over COUNT samples [1000]"},
+	{"fine-bandwidth", 'f', "FREQ", 0, "Bandwidth of the fine window in kHz [25k]"},
+	{"coarse-bandwidth", 'c', "FREQ", 0, "Bandwidth of the coarse window in kHz [8*f]"},
+	{"spread", 's', "FREQ", 0, "Minimum frequency between detected signals [50k]" },
+	{"threshold", 't', "POWER", 0, "Threshold for the difference between the coarse and fine filtered signals in dB [3dB]"},
+	{"start-frequency", 'x', "FREQ", 0, "Start frequency in MHz [87Mhz]"},
+	{"end-frequency", 'y', "FREQ", 0, "End frequency in MHz [108Mhz]"},
+	{"sample-rate", 'r', "RATE", 0, "Samplerate in Msamples/s [2Msps]"},
+	{"fft-width", 'w', "COUNT", 0, "Width of FFT in samples [1024]"},
+	{"step", 'z', "FREQ", 0, "Increment step in MHz [1/4 Sample Rate]"},
+	{"time", 'p', "TIME", 0, "Time in seconds to scan on each frequency [-1]"},
 	{0}
 };
 argp Arguments::argp_i = {options, s_parse_opt, 0, 0};

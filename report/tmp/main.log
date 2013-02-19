@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.10.8)  12 FEB 2013 06:24
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.10.8)  18 FEB 2013 11:58
 entering extended mode
  Source specials enabled.
  %&-line parsing enabled.
@@ -24,7 +24,8 @@ File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 \abovecaptionskip=\skip41
 \belowcaptionskip=\skip42
 \bibindent=\dimen102
-) (./main.aux)
+)
+No file main.aux.
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 4.
@@ -39,15 +40,14 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 4.
 LaTeX Font Info:    ... okay on input line 4.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 4.
 LaTeX Font Info:    ... okay on input line 4.
-
 (./Abstract.tex) (./Introduction.tex) (./EnergyDetection.tex)
 (./CycloStationary.tex) [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
 (./main.aux) ) 
 Here is how much of TeX's memory you used:
- 238 strings out of 495061
- 2565 string characters out of 1182621
+ 236 strings out of 495061
+ 2547 string characters out of 1182621
  46386 words of memory out of 3000000
  3487 multiletter control sequences out of 15000+50000
  4850 words of font info for 18 fonts, out of 3000000 for 9000
