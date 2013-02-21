@@ -23,8 +23,7 @@ main.d: ../main.cpp ../arguments.hpp ../topblock.hpp \
  /usr/local/include/gnuradio/gr_complex_to_xxx.h \
  /usr/local/include/gnuradio/gr_single_pole_iir_filter_ff.h \
  /usr/local/include/gnuradio/gr_single_pole_iir.h \
- /usr/local/include/gnuradio/gr_nlog10_ff.h ../autofam_sink.hpp \
- ../HelperFunctions.hpp
+ /usr/local/include/gnuradio/gr_nlog10_ff.h ../scanner_sink.hpp
 
 ../arguments.hpp:
 
@@ -80,6 +79,4 @@ main.d: ../main.cpp ../arguments.hpp ../topblock.hpp \
 
 /usr/local/include/gnuradio/gr_nlog10_ff.h:
 
-../autofam_sink.hpp:
-
-../HelperFunctions.hpp:
+../scanner_sink.hpp:
