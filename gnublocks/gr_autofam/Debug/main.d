@@ -1,5 +1,5 @@
 main.d: ../main.cpp ../arguments.hpp ../topblock.hpp \
- /usr/local/include/gnuradio/gr_top_block.h \
+ ../HelperFunctions.hpp /usr/local/include/gnuradio/gr_top_block.h \
  /usr/local/include/gnuradio/gr_core_api.h \
  /usr/local/include/gnuradio/gr_hier_block2.h \
  /usr/local/include/gnuradio/gr_basic_block.h \
@@ -23,12 +23,13 @@ main.d: ../main.cpp ../arguments.hpp ../topblock.hpp \
  /usr/local/include/gnuradio/gr_complex_to_xxx.h \
  /usr/local/include/gnuradio/gr_single_pole_iir_filter_ff.h \
  /usr/local/include/gnuradio/gr_single_pole_iir.h \
- /usr/local/include/gnuradio/gr_nlog10_ff.h ../autofam_sink.hpp \
- ../HelperFunctions.hpp
+ /usr/local/include/gnuradio/gr_nlog10_ff.h ../autofam_sink.hpp
 
 ../arguments.hpp:
 
 ../topblock.hpp:
+
+../HelperFunctions.hpp:
 
 /usr/local/include/gnuradio/gr_top_block.h:
 
@@ -81,5 +82,3 @@ main.d: ../main.cpp ../arguments.hpp ../topblock.hpp \
 /usr/local/include/gnuradio/gr_nlog10_ff.h:
 
 ../autofam_sink.hpp:
-
-../HelperFunctions.hpp:

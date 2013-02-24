@@ -23,6 +23,9 @@
 
 #include <cmath>
 #include <stdint.h>
+#include "HelperFunctions.hpp"
+
+#include <cmath>
 
 #include <gr_top_block.h>
 #include <osmosdr_source_c.h>
@@ -37,18 +40,19 @@
 class TopBlock : public gr_top_block
 {
 	public:
-		TopBlock(double centerFreq, double sampleRate, int fftWidth, double freqRes, double cycFreqRes, std::string fileName) :
+		TopBlock(double centerFreq, double sampleRate, double freqRes, double cycFreqRes, std::string fileName) :
 			gr_top_block("Top Block"),
-			vector_length(fftWidth),
+			Np(pow2roundup((int)sampleRate/freqRes)),
+			L(Np/4),
+			P(pow2roundup(sampleRate/cycFreqRes/L)),
+			N(P*L),
+			vector_length(N),
 			window(GetWindow(vector_length)),
 			source(osmosdr_make_source_c()), /* OsmoSDR Source */
 			stv(gr_make_stream_to_vector(sizeof(float)*2, vector_length)), /* Stream to vector */
-			fft(gr_make_fft_vcc_fftw(vector_length, true, window, false, 1)),
 			/* autoFam - this does most of the interesting work */
 			sink(make_autofam_sink(source, vector_length, centerFreq, sampleRate, freqRes, cycFreqRes, fileName))
 		{
-
-			printRunParams(centerFreq, sampleRate, fftWidth, freqRes, cycFreqRes, fileName);
 
 			/* Set up the OsmoSDR Source */
 			source->set_sample_rate(sampleRate);
@@ -60,8 +64,7 @@ class TopBlock : public gr_top_block
 			
 			/* Set up the connections */
 			connect(source, 0, stv, 0);
-			connect(stv, 0, fft, 0);
-			connect(fft, 0, sink, 0);
+			connect(stv, 0, sink, 0);
 		}
 		
 	private:
@@ -92,16 +95,10 @@ class TopBlock : public gr_top_block
 			return total;
 		}
 
-		void printRunParams(double centerFreq, double sampleRate, int fftWidth, double freqRes, double cycFreqRes, std::string fileName)
-		{
-			printf("Center Frequency: \t%f\n", centerFreq);
-			printf("Sample Rate: \t%f\n", sampleRate);
-			printf("FFT Width: \t%i\n", fftWidth);
-			printf("Frequency Resolution: \t%f\n", freqRes);
-			printf("Cyclic freq res: \t%f\n", cycFreqRes);
-			printf("File Name: \t%s\n", fileName.c_str());
-		}
-
+		int Np;  // Number of input channels
+		int L;  // Offset between points in the same column
+		int P;  // Number of rows formed in the channelization matrix
+		int N;  // Number of points in the input data.
 		size_t vector_length;
 		std::vector<float> window;
 

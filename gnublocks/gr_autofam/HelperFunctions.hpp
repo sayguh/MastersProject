@@ -23,3 +23,4 @@ inline int pow2roundup (int x)
     x |= x >> 16;
     return x+1;
 }
+

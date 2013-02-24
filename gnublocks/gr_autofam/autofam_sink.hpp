@@ -27,7 +27,9 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include "HelperFunctions.hpp"
+#include <complex>
+#include <Eigen/Dense>
+#define _USE_MATH_DEFINES // for C++
 #include <cmath>
 
 #include <boost/shared_ptr.hpp>
@@ -37,6 +39,7 @@
 #include <gr_io_signature.h>
 #include <osmosdr_source_c.h>
 
+using Eigen::MatrixXcd;  // Using only complex double matrixes
 class autofam_sink : public gr_block
 {
 	// source, vector_length, centerFreq, sampleRate, freqRes, cycFreqRes, fileName)
@@ -52,37 +55,112 @@ class autofam_sink : public gr_block
 			m_vector_length(vector_length), //size of the FFT
 		    m_fileName(fileName)
 		{
-			ZeroBuffer();
 			filestr.open (m_fileName.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
 
 		}
 
 		virtual ~autofam_sink()
 		{
-			delete []m_buffer; //delete the buffer
 		}
 		
 	private:
 		virtual int general_work(int noutput_items, gr_vector_int &ninput_items, gr_vector_const_void_star &input_items, gr_vector_void_star &output_items)
 		{
+			// Test data
+			float testData[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+			m_fs = 100;
+			m_df = 24;
+			m_dalpha = 12;
+			ProcessVector((&testData[0]));
 
-			for (int i = 0; i < ninput_items[0]; i++){
-				ProcessVector(((float *)input_items[0]) + i * m_vector_length);
-			}
+
+			// The real data
+//			for (int i = 0; i < ninput_items[0]; i++){
+//				ProcessVector(((float *)input_items[0]) + i * m_vector_length);
+//			}
 
 			consume_each(ninput_items[0]);
+
+			// Testing so exit after 1 iteration
+			exit(-1);
+
 			return 0;
 		}
 		
 		void ProcessVector(float *input)
 		{
-			// TODO: This needs to be moved earlier into topblock b/c it determines the FFT size.
-			int Np = pow(2,pow2roundup((int)m_fs/m_df));
-			int L=Np/4;
 
-			int P = pow(2, pow2roundup(m_fs/m_dalpha/L));
+			int Np(pow2roundup((int)m_fs/m_df));
+			int L(Np/4);
+			int P(pow2roundup(m_fs/m_dalpha/L));
+			int N(P*L);
+			int NN((P-1)*L + Np);
 
-			int N=P*L;
+			// I should fix this, I don't need a complex matrix.
+			MatrixXcd X(Np,P);
+			for (int k = 0; k < P; k++)
+			{
+				for (int i = 0; i < Np; i++)
+				{
+					X(i, k) = input[k*L+1 + i];
+				}
+			}
+//
+//
+//			double freqs[m_vector_length]; //for convenience
+//			float XF1[m_vector_length];
+//
+//			// So bands0 is just the fftshift of the data, and freqs becomes the cooresponding frequencies.  So you could do plot(freqs, bands0)
+//			fftShift(input, XF1, freqs, m_centerFreq, m_fs, m_vector_length); //organize the buffer into a convenient order (saves to bands0)
+//
+//			MatrixXcd E(Np,P);
+//
+//			/*****************
+//			* Down conversion *
+//			******************/
+//			for (int k = -Np/2; k<Np/2-1; k++) {
+//				for (int m = 0; m<P-1; m++) {
+//					std::complex<double> x = (double)-2*M_PI*k*m*L/Np;
+//					E(k+Np/2+1,m+1) = std::exp(x);
+//				}
+//			}
+//
+//			MatrixXcd XD(Np,P);
+//
+//			// I do the multiply and transpose at the same time here.
+//			for (int i =0; i < Np; i++)
+//			{
+//				for (int j = 0; j < P; j++)
+//				{
+//					// Transpose XD
+//					XD(j,i) = XF1(i,j) * E(i,j);
+//				}
+//			}
+//
+//			MatrixXcd XM(P,Np^2);  // Our zero matrix
+//
+//			for (int i = 0; i<P; i++)
+//			{
+//				for (int j = 0; j < Np^2; j++)
+//				{
+//					XM(i,j) = 0;
+//				}
+//			}
+//
+//			for (int k = 0; k < Np; k++)
+//			{
+//				for (int l = 0; l < Np; l++)
+//				{
+//					for (int x = 0; x < P; x++)
+//					{
+//						XM(x,(k-1)*Np+l) = XD(x,k)*std::conj((std::complex<double>) XD(x,l));
+//					}
+//				}
+//			}
+
+			/////////// Second FFT /////////////
+
+
 
 
 		}
@@ -90,36 +168,35 @@ class autofam_sink : public gr_block
 		/**
 		 * fftshift equivalent
 		 */
-		void Rearrange(float *bands, double *freqs, double centre, double bandwidth)
+		void fftShift(float *inputFFT, float *outputFFT, double *outputFreqs, double centre, double bandwidth, int vector_length)
 		{
-			double samplewidth = bandwidth/(double)m_vector_length;
-			for (unsigned int i = 0; i < m_vector_length; i++){
+			double samplewidth = bandwidth/(double)vector_length;
+			for (unsigned int i = 0; i < vector_length; i++){
 				/* FFT is arranged starting at 0 Hz at the start, rather than in the middle */
-				if (i < m_vector_length/2){ //lower half of the fft
-					bands[i + m_vector_length/2] = m_buffer[i];
+				if (i < vector_length/2){ //lower half of the fft
+					outputFFT[i + vector_length/2] = inputFFT[i];
 				}
 				else { //upper half of the fft
-					bands[i - m_vector_length/2] = m_buffer[i];
+					outputFFT[i - vector_length/2] = inputFFT[i];
 				}
 
-				freqs[i] = centre + i * samplewidth - bandwidth/2; //calculate the frequency of this sample
+				outputFFT[i] = centre + i * samplewidth - bandwidth/2; //calculate the frequency of this sample
 			}
 		}
 		
 		
-		void ZeroBuffer()
-		{
-			/* writes zeros to m_buffer */
-			for (unsigned int i = 0; i < m_vector_length; i++){
-				m_buffer[i] = 0.0;
-			}
-		}
+//		void ZeroBuffer(float* buffer)
+//		{
+//			/* writes zeros to m_buffer */
+//			for (unsigned int i = 0; i < m_vector_length; i++){
+//				m_buffer[i] = 0.0;
+//			}
+//		}
 		
 		// Our osmo source
 		osmosdr_source_c_sptr m_source;
 
 		// Not sure if I'll use
-		float *m_buffer;
 		unsigned int m_vector_length;
 
 		double m_centerFreq;

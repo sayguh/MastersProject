@@ -43,7 +43,7 @@ all: gr_autofam
 gr_autofam: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++ -L/usr/local/include/gnuradio -o "gr_autofam" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -L/usr/local/include/gnuradio -L/usr/local/include/Eigen -o "gr_autofam" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

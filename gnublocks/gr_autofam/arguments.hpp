@@ -30,7 +30,6 @@ class Arguments
 		Arguments(int argc, char **argv) :
 			centerFreq(88.5),
 			sampleRate(2),
-			fftWidth(1024),
 			freqRes(10),
 			cyclicFreqRes(100),
 			fileName("outputFile.txt")
@@ -40,27 +39,22 @@ class Arguments
 		
 		double getCenterFreq()
 		{
-			return centerFreq;
+			return centerFreq * 1000000.0;
 		}
 
 		double getSampleRate()
 		{
-			return sampleRate;
-		}
-
-		double getFftWidth()
-		{
-			return fftWidth;
+			return sampleRate * 1000000.0;
 		}
 
 		double getFreqRes()
 		{
-			return freqRes;
+			return freqRes * 1000.0;
 		}
 
 		double getCyclicFreqRes()
 		{
-			return cyclicFreqRes;
+			return cyclicFreqRes * 1000.0;
 		}
 
 		std::string getFileName()
@@ -80,13 +74,10 @@ class Arguments
 			switch (key)
 			{
 				case 'f':
-					centerFreq = atof(arg) * 1000.0;
+					centerFreq = atof(arg);
 					break;
 				case 'r':
-					sampleRate = atof(arg) * 1000.0;
-					break;
-				case 'w':
-					fftWidth = atoi(arg);
+					sampleRate = atof(arg);
 					break;
 				case 't':
 					freqRes = atof(arg);
@@ -108,7 +99,6 @@ class Arguments
 		
 		double centerFreq;
 		double sampleRate;
-		int fftWidth;
 		double freqRes;
 		double cyclicFreqRes;
 		std::string fileName;
@@ -116,7 +106,6 @@ class Arguments
 argp_option Arguments::options[] = {
 	{"center-frequency", 'f', "FREQ", 0, "Frequency in MHz [87kHz]"},
 	{"sample-rate", 'r', "RATE", 0, "Samplerate in Msamples/s [2,000ksps]"},
-	{"fft-width", 'w', "FFTW", 0, "Width of FFT in samples [1024]"},
 	{"freq-res", 't', "FRES", 0, "Desired Frequency Resolution in kHz [10kHz]"},
 	{"cycfreq-res", 'c', "CYCRES", 0, "Desired Cyclic Frequency Resolution in kHz [100kHz]"},
 	{"file-name", 'n', "FILE", 0, "File name for output data to be written to [outputFile.txt]"},
