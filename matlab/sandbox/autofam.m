@@ -23,7 +23,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Definition of Parameters %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Np=pow2(nextpow2(fs/df));       %Number of input channels, defined
+Np=pow2(nextpow2(fs/df))       %Number of input channels, defined
                                 %by the desired frequency
                                 %resolution (df) as follows:
                                 %Np=fs/df, where fs is the original
@@ -31,20 +31,20 @@ Np=pow2(nextpow2(fs/df));       %Number of input channels, defined
                                 %power of 2 to avoid truncation or
                                 %zero-padding in the FFT routines;
                                 
-L=Np/4;                         %Offset between points in the same
+L=Np/4                         %Offset between points in the same
                                 %column at consecutive rows in the
                                 %same channelization matrix. It
                                 %should be chosen to be less than
                                 %or equal to Np/4;
                                 
-P=pow2(nextpow2(fs/dalpha/L));  %Number of rows formed in the
+P=pow2(nextpow2(fs/dalpha/L))  %Number of rows formed in the
                                 %channelization matrix, defined by
                                 %the desired cyclic frequency
                                 %resolution (dalpha) as follows:
                                 %P=fs/dalpha/L. It must be a power
                                 %of 2;
                                 
-N=P*L;                          %Total number of points in the
+N=P*L                          %Total number of points in the
                                 %input data
 
 %%%%%%%%%%%%%%%%%%%%%%%%
@@ -57,7 +57,7 @@ elseif length(x) > N
     x=x(1:N);
 end
 
-NN=(P-1)*L+Np;
+NN=(P-1)*L+Np
 xx=x;
 xx(NN)=0;
 xx=xx(:);
@@ -65,12 +65,12 @@ X=zeros(Np,P);
 for k=0:P-1
     X(:,k+1)=xx(k*L+1:k*L+Np);
 end
-
+X
 %%%%%%%%%%%%%
 % Windowing %
 %%%%%%%%%%%%%
-a=hamming(Np);
-XW=diag(a)*X;
+a=hamming(Np)
+XW=diag(a)*X
 
 %%%%%%%%%%%%%
 % First FFT %
@@ -80,7 +80,7 @@ XF1=fft(XW);
 %as simply doing the new third operation
 %XF1=fftshift(XF1);
 %XF1=[XF1(:,P/2+1:P) XF1(:,1:P/2)];
-XF1=fftshift(XF1, 1);
+XF1=fftshift(XF1, 1)
 
 %%%%%%%%%%%%%%%%%%
 % Downconversion %
@@ -91,7 +91,8 @@ for k=-Np/2:Np/2-1
         E(k+Np/2+1,m+1)=exp(-i*2*pi*k*m*L/Np);
     end
 end
-
+P
+E
 XD=XF1.*E;
 %all this operation does is take a transpose and 2 complex conjugates
 %so the complex conjugate operations cancel each other out

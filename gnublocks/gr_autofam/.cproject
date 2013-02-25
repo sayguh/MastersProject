@@ -27,6 +27,7 @@
 								<option id="gnu.cpp.compiler.exe.debug.option.debugging.level.729495722" name="Debug Level" superClass="gnu.cpp.compiler.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1491932481" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/usr/local/include/gnuradio"/>
+									<listOptionValue builtIn="false" value="/usr/local/inclue/Eigen"/>
 									<listOptionValue builtIn="false" value="/usr/local/include/osmosdr"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.other.other.540385060" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0" valueType="string"/>
@@ -37,6 +38,7 @@
 								<option id="gnu.c.compiler.exe.debug.option.debugging.level.120548698" name="Debug Level" superClass="gnu.c.compiler.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.include.paths.1957978106" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/usr/local/include/gnuradio"/>
+									<listOptionValue builtIn="false" value="/usr/local/include/Eigen"/>
 									<listOptionValue builtIn="false" value="/usr/local/include/osmosdr"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1891499306" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
@@ -45,12 +47,15 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.925932376" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug">
 								<option id="gnu.cpp.link.option.libs.39412541" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="gnuradio-core"/>
+									<listOptionValue builtIn="false" value="fftw3"/>
+									<listOptionValue builtIn="false" value="m"/>
 									<listOptionValue builtIn="false" value="dl"/>
 									<listOptionValue builtIn="false" value="pthread"/>
 									<listOptionValue builtIn="false" value="gnuradio-osmosdr"/>
 								</option>
 								<option id="gnu.cpp.link.option.paths.407896708" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="/usr/local/include/gnuradio"/>
+									<listOptionValue builtIn="false" value="/usr/local/include/Eigen"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1446694029" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -130,6 +135,8 @@
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 		</scannerConfigBuildInfo>
 	</storageModule>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="refreshScope" versionNumber="1">
+		<resource resourceType="PROJECT" workspacePath="/gr_autofam"/>
+	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>

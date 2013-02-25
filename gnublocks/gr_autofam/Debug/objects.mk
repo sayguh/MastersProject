@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS := -lgnuradio-core -ldl -lpthread -lgnuradio-osmosdr
+LIBS := -lgnuradio-core -lfftw3 -lm -ldl -lpthread -lgnuradio-osmosdr
 

@@ -47,7 +47,6 @@ class TopBlock : public gr_top_block
 			P(pow2roundup(sampleRate/cycFreqRes/L)),
 			N(P*L),
 			vector_length(N),
-			window(GetWindow(vector_length)),
 			source(osmosdr_make_source_c()), /* OsmoSDR Source */
 			stv(gr_make_stream_to_vector(sizeof(float)*2, vector_length)), /* Stream to vector */
 			/* autoFam - this does most of the interesting work */
@@ -68,22 +67,6 @@ class TopBlock : public gr_top_block
 		}
 		
 	private:
-		/* http://en.wikipedia.org/w/index.php?title=Window_function&oldid=508445914 */
-		std::vector<float> GetWindow(size_t n)
-		{
-			std::vector<float> w;
-			w.resize(n);
-
-			double a = 0.16;
-			double a0 = (1.0 - a)/2.0;
-			double a1 = 0.5;
-			double a2 = a/2.0;
-
-			for (unsigned int i = 0; i < n; i++){
-				w[i] = a0 - a1 * cos((2.0 * 3.14159 * (double)i)/(double)(n - 1)) + a2 * cos((4.0 * 3.14159 * (double)i)/(double)(n - 1));
-			}
-			return w;
-		}
 
 		double GetWindowPower()
 		{

@@ -31,6 +31,7 @@
 #include <Eigen/Dense>
 #define _USE_MATH_DEFINES // for C++
 #include <cmath>
+#include <fftw3.h>
 
 #include <boost/shared_ptr.hpp>
 
@@ -45,14 +46,14 @@ class autofam_sink : public gr_block
 	// source, vector_length, centerFreq, sampleRate, freqRes, cycFreqRes, fileName)
 	public:
 		autofam_sink(osmosdr_source_c_sptr source, unsigned int vector_length, double centerFreq, double sampleRate, double freqRes, double cycFreqRes, std::string fileName) :
-			gr_block ("autofam_sink",
-				gr_make_io_signature (1, 1, sizeof (float) * vector_length),
+			gr_block ("autofam_sink", // The size increased by 2 since we take in complex.
+				gr_make_io_signature (1, 1, 2*sizeof (float) * vector_length),
 				gr_make_io_signature (0, 0, 0)),
 			m_source(source), //We need the source in order to be able to control it
 			m_fs(sampleRate),
 			m_df(freqRes),
 			m_dalpha(cycFreqRes),
-			m_vector_length(vector_length), //size of the FFT
+			m_vector_length(vector_length),
 		    m_fileName(fileName)
 		{
 			filestr.open (m_fileName.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
@@ -68,6 +69,7 @@ class autofam_sink : public gr_block
 		{
 			// Test data
 			float testData[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+			m_vector_length = 16;
 			m_fs = 100;
 			m_df = 24;
 			m_dalpha = 12;
@@ -80,7 +82,7 @@ class autofam_sink : public gr_block
 //			}
 
 			consume_each(ninput_items[0]);
-
+			printf("\nTest Over, completed\n");
 			// Testing so exit after 1 iteration
 			exit(-1);
 
@@ -90,23 +92,82 @@ class autofam_sink : public gr_block
 		void ProcessVector(float *input)
 		{
 
-			int Np(pow2roundup((int)m_fs/m_df));
+			int Np(pow2roundup((int)std::ceil(m_fs/m_df)));
 			int L(Np/4);
-			int P(pow2roundup(m_fs/m_dalpha/L));
+			int P(pow2roundup((int) std::ceil(m_fs/m_dalpha/L)));
 			int N(P*L);
 			int NN((P-1)*L + Np);
+			fftw_complex *in, *out;
+			fftw_plan p;
 
-			// I should fix this, I don't need a complex matrix.
+			printf("Np = %i\n", Np);
+			printf("L = %i\n", L);
+			printf("P = %i\n", P);
+			printf("N = %i\n", N);
+			printf("NN = %i\n", NN);
+
 			MatrixXcd X(Np,P);
 			for (int k = 0; k < P; k++)
 			{
 				for (int i = 0; i < Np; i++)
 				{
-					X(i, k) = input[k*L+1 + i];
+					if (k*L + i < m_vector_length)
+						X(i, k) = input[k*L + i];
+					else
+						X(i,k) = 0;
 				}
 			}
-//
-//
+
+			std::cout << "Matrix X:\n" << X << std::endl;
+
+			std::vector<float> window = hamming(Np);
+
+			MatrixXcd hammingMatrix(Np, Np);
+
+			for (int i = 0; i < Np; i++)
+			{
+				for (int j = 0; j < Np; j++)
+				{
+					if (i == j)
+						hammingMatrix(i,j) = window[i];
+					else
+						hammingMatrix(i,j) = 0;
+				}
+			}
+
+			MatrixXcd XW = hammingMatrix * X;
+
+			in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Np);
+			out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Np);
+			p = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+
+			MatrixXcd XF1(Np,P);
+
+			for (int i = 0; i < P; i++)
+			{
+				for (int j = 0; j < Np; j++)
+				{
+					in[j][0] = ((std::complex<double>) XW(j,i)).real();	// Fill up the input FFT array
+					in[j][1] = ((std::complex<double>) XW(j,i)).imag();	// Fill up the input FFT array
+				}
+
+				fftw_execute(p); // Execute the FFT
+
+				for (int j = 0; j < Np; j++)
+				{
+					((std::complex<double>) XF1(j,i)).real(out[j][0]);
+					((std::complex<double>) XF1(j,i)).imag(out[j][1]);
+				}
+
+			}
+			// Clean up the FFT
+			fftw_destroy_plan(p);
+			fftw_free(in); fftw_free(out);
+
+			std::cout << "Matrix XF1:\n" << XF1<< std::endl;
+
+
+
 //			double freqs[m_vector_length]; //for convenience
 //			float XF1[m_vector_length];
 //
@@ -197,7 +258,7 @@ class autofam_sink : public gr_block
 		osmosdr_source_c_sptr m_source;
 
 		// Not sure if I'll use
-		unsigned int m_vector_length;
+		int m_vector_length;
 
 		double m_centerFreq;
 		double m_fs; // sample rate

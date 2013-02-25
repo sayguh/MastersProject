@@ -30,8 +30,8 @@ class Arguments
 		Arguments(int argc, char **argv) :
 			centerFreq(88.5),
 			sampleRate(2),
-			freqRes(10),
-			cyclicFreqRes(100),
+			freqRes(100),
+			cyclicFreqRes(10),
 			fileName("outputFile.txt")
 		{
 			argp_parse (&argp_i, argc, argv, 0, 0, this);
