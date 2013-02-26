@@ -50,10 +50,10 @@ class autofam_sink : public gr_block
 				gr_make_io_signature (1, 1, 2*sizeof (float) * vector_length),
 				gr_make_io_signature (0, 0, 0)),
 			m_source(source), //We need the source in order to be able to control it
+			m_vector_length(vector_length),
 			m_fs(sampleRate),
 			m_df(freqRes),
 			m_dalpha(cycFreqRes),
-			m_vector_length(vector_length),
 		    m_fileName(fileName)
 		{
 			filestr.open (m_fileName.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
@@ -92,13 +92,14 @@ class autofam_sink : public gr_block
 		void ProcessVector(float *input)
 		{
 
+
 			int Np(pow2roundup((int)std::ceil(m_fs/m_df)));
 			int L(Np/4);
 			int P(pow2roundup((int) std::ceil(m_fs/m_dalpha/L)));
 			int N(P*L);
 			int NN((P-1)*L + Np);
 			fftw_complex *in, *out;
-			fftw_plan p;
+			fftw_plan fftPlan;
 
 			printf("Np = %i\n", Np);
 			printf("L = %i\n", L);
@@ -137,9 +138,11 @@ class autofam_sink : public gr_block
 
 			MatrixXcd XW = hammingMatrix * X;
 
+			std::cout << "Matrix XW:\n" << XW << std::endl;
+
 			in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Np);
 			out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Np);
-			p = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+			fftPlan = fftw_plan_dft_1d(Np, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
 
 			MatrixXcd XF1(Np,P);
 
@@ -151,108 +154,171 @@ class autofam_sink : public gr_block
 					in[j][1] = ((std::complex<double>) XW(j,i)).imag();	// Fill up the input FFT array
 				}
 
-				fftw_execute(p); // Execute the FFT
+				fftw_execute(fftPlan); // Execute the FFT
 
+				// We FFT Shift each column as we read it out
 				for (int j = 0; j < Np; j++)
 				{
-					((std::complex<double>) XF1(j,i)).real(out[j][0]);
-					((std::complex<double>) XF1(j,i)).imag(out[j][1]);
+					if (j < Np/2)
+						XF1(j+Np/2, i) = std::complex<double>(out[j][0],out[j][1]);
+					else
+						XF1(j-Np/2, i) = std::complex<double>(out[j][0],out[j][1]);
 				}
-
 			}
 			// Clean up the FFT
-			fftw_destroy_plan(p);
-			fftw_free(in); fftw_free(out);
+			fftw_destroy_plan(fftPlan);
+			fftw_free(in);
+			fftw_free(out);
 
 			std::cout << "Matrix XF1:\n" << XF1<< std::endl;
 
+			MatrixXcd E(Np,P);
+
+			for (int i = 0; i < Np; i++)
+				for (int k = 0; k < P; k++)
+					E(i,k) = 0;
+
+			/*****************
+			* Down conversion *
+			******************/
+			std::complex<double> i;
+			i.imag(1);
+
+			for (int k = -Np/2; k<Np/2; k++) {
+				for (int m = 0; m<P; m++) {
+					std::complex<double> x = -2*M_PI*k*m*L/Np;
+					E(k+Np/2,m) = std::exp(x*i);
+				}
+			}
+
+			std::cout << "Matrix E:\n" << E << std::endl;
+
+			MatrixXcd XD(Np,P);
+
+			// I do the multiply and transpose at the same time here.
+			for (int i =0; i < Np; i++)
+				for (int j = 0; j < P; j++)
+					XD(j,i) = XF1(i,j) * E(i,j);
+
+			std::cout << "Matrix XD':\n" << XD << std::endl;
 
 
-//			double freqs[m_vector_length]; //for convenience
-//			float XF1[m_vector_length];
-//
-//			// So bands0 is just the fftshift of the data, and freqs becomes the cooresponding frequencies.  So you could do plot(freqs, bands0)
-//			fftShift(input, XF1, freqs, m_centerFreq, m_fs, m_vector_length); //organize the buffer into a convenient order (saves to bands0)
-//
-//			MatrixXcd E(Np,P);
-//
-//			/*****************
-//			* Down conversion *
-//			******************/
-//			for (int k = -Np/2; k<Np/2-1; k++) {
-//				for (int m = 0; m<P-1; m++) {
-//					std::complex<double> x = (double)-2*M_PI*k*m*L/Np;
-//					E(k+Np/2+1,m+1) = std::exp(x);
-//				}
-//			}
-//
-//			MatrixXcd XD(Np,P);
-//
-//			// I do the multiply and transpose at the same time here.
-//			for (int i =0; i < Np; i++)
-//			{
-//				for (int j = 0; j < P; j++)
-//				{
-//					// Transpose XD
-//					XD(j,i) = XF1(i,j) * E(i,j);
-//				}
-//			}
-//
-//			MatrixXcd XM(P,Np^2);  // Our zero matrix
-//
-//			for (int i = 0; i<P; i++)
-//			{
-//				for (int j = 0; j < Np^2; j++)
-//				{
-//					XM(i,j) = 0;
-//				}
-//			}
-//
-//			for (int k = 0; k < Np; k++)
-//			{
-//				for (int l = 0; l < Np; l++)
-//				{
-//					for (int x = 0; x < P; x++)
-//					{
-//						XM(x,(k-1)*Np+l) = XD(x,k)*std::conj((std::complex<double>) XD(x,l));
-//					}
-//				}
-//			}
+			MatrixXcd XM(P,Np*Np);  // Our zero matrix
 
+			for (int k = 0; k < Np; k++)
+				for (int l = 0; l < Np; l++)
+					for (int x = 0; x < P; x++)
+					{
+						std::complex<double> test = XD(x,l);
+						XM(x,k*Np+l) = XD(x,k)*std::conj(test);
+					}
+
+			std::cout << "Matrix XM:\n" << XM << std::endl;
 			/////////// Second FFT /////////////
 
 
+			in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * P);
+			out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * P);
+			fftPlan = fftw_plan_dft_1d(P, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
 
+			MatrixXcd XF2(P,Np*Np);
 
-		}
-		
-		/**
-		 * fftshift equivalent
-		 */
-		void fftShift(float *inputFFT, float *outputFFT, double *outputFreqs, double centre, double bandwidth, int vector_length)
-		{
-			double samplewidth = bandwidth/(double)vector_length;
-			for (unsigned int i = 0; i < vector_length; i++){
-				/* FFT is arranged starting at 0 Hz at the start, rather than in the middle */
-				if (i < vector_length/2){ //lower half of the fft
-					outputFFT[i + vector_length/2] = inputFFT[i];
-				}
-				else { //upper half of the fft
-					outputFFT[i - vector_length/2] = inputFFT[i];
+			for (int i = 0; i < Np*Np; i++)
+			{
+				for (int j = 0; j < P; j++)
+				{
+					in[j][0] = ((std::complex<double>) XM(j,i)).real();	// Fill up the input FFT array
+					in[j][1] = ((std::complex<double>) XM(j,i)).imag();	// Fill up the input FFT array
 				}
 
-				outputFFT[i] = centre + i * samplewidth - bandwidth/2; //calculate the frequency of this sample
+				fftw_execute(fftPlan); // Execute the FFT
+
+				// We FFT Shift each column as we read it out
+				for (int j = 0; j < P; j++)
+				{
+					if (j < P/2)
+						XF2(j+P/2, i) = std::complex<double>(out[j][0],out[j][1]);
+					else
+						XF2(j-P/2, i) = std::complex<double>(out[j][0],out[j][1]);
+				}
 			}
+			// Clean up the FFT
+			fftw_destroy_plan(fftPlan);
+			fftw_free(in);
+			fftw_free(out);
+
+			std::cout << "Matrix XF2:\n" << XF2 << std::endl;
+
+			Eigen::MatrixXd M(P/2+1,Np*Np);
+
+			for (int i = 0; i < P/2+1; i++)
+				for (int j = 0; j < Np*Np; j++)
+					M(i,j) = std::abs((std::complex<double>) XF2(i + P/4-1,j));
+
+			std::cout << "Matrix M:\n" << M << std::endl;
+
+			Eigen::VectorXd alpha0(2*N+1);
+			alpha0(0) = -1;
+
+			for (int i = 1; i < 2*N+1; i++)
+				alpha0(i) = alpha0(i-1) + 1.0/N;
+
+			std::cout << "Vector alpha0:\n" << alpha0 << std::endl;
+
+			Eigen::VectorXd fo(Np+1);
+			fo(0) = -0.5;
+
+			for (int i = 1; i < Np+1; i++)
+				fo(i) = fo(i-1) + 1.0/Np;
+
+			std::cout << "Vector fo:\n" << fo<< std::endl;
+
+			Eigen::MatrixXd Sx(Np+1,2*N+1);
+
+			for (int i = 0; i < Np+1; i++)
+				for (int j = 0; j < 2*N+1; j++)
+					Sx(i,j) = 0;
+
+
+			double l, k, p, alpha, f;
+			int kk,ll;
+
+			// Rather than try and figure out how to change the matlab code to a 0 start index, I'm just copying
+			// it exactly and then putting "-1"'s in my matrix access.
+			for (int k1 = 1; k1 < P/2 + 2; k1++)
+			{
+				for (int k2 = 1; k2 < Np*Np; k2++)
+				{
+					if (k2 % Np == 0)
+						l = Np/2 - 1;
+					else
+						l = (k2 % Np) - Np/2 - 1;
+
+					k = std::ceil((double)k2/ (double)Np) - Np/2 - 1;
+					p = k1 - (double)P/4.0 - 1;
+					alpha = ((k-l)/(double)Np) + (p-1)/((double) L)/((double)P);
+					f = (k+l)/2.0/(double)Np;
+
+					if (alpha < -1 || alpha > 1)
+					{
+						k2 = k2 + 1;
+					}
+					else if (f < -0.5 || f > 0.5)
+					{
+						k2 = k2 + 1;
+					}
+					else
+					{
+						kk = std::ceil(1 + Np*((double)f + 0.5));
+						ll = 1 + N*(alpha + 1);
+						Sx(kk-1,ll-1) = M(k1-1,k2-1);
+					}
+				}
+			}
+
+			std::cout << "Matrix Sx:\n" << Sx << std::endl;
+
 		}
-		
-		
-//		void ZeroBuffer(float* buffer)
-//		{
-//			/* writes zeros to m_buffer */
-//			for (unsigned int i = 0; i < m_vector_length; i++){
-//				m_buffer[i] = 0.0;
-//			}
-//		}
 		
 		// Our osmo source
 		osmosdr_source_c_sptr m_source;
@@ -269,7 +335,6 @@ class autofam_sink : public gr_block
 		std::string m_fileName;
 		std::fstream filestr;
 
-		//unsigned int vector_length, double centerFreq, double sampleRate, double freqRes, double cycFreqRes, std::string fileName
 };
 
 /* Shared pointer thing gnuradio is fond of */
