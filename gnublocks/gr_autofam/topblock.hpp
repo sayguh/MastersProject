@@ -30,10 +30,6 @@
 #include <gr_top_block.h>
 #include <osmosdr_source_c.h>
 #include <gr_stream_to_vector.h>
-#include <gr_fft_vcc_fftw.h>
-#include <gr_complex_to_xxx.h>
-#include <gr_single_pole_iir_filter_ff.h>
-#include <gr_nlog10_ff.h>
 #include "autofam_sink.hpp"
 #include <string>
 
@@ -87,9 +83,5 @@ class TopBlock : public gr_top_block
 
 		osmosdr_source_c_sptr source;
 		gr_stream_to_vector_sptr stv;
-		gr_fft_vcc_sptr fft;
-		gr_complex_to_mag_squared_sptr ctf;
-		gr_single_pole_iir_filter_ff_sptr iir;
-		gr_nlog10_ff_sptr lg;
 		autofam_sink_sptr sink;
 };

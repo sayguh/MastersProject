@@ -28,10 +28,10 @@ class Arguments
 {
 	public:
 		Arguments(int argc, char **argv) :
-			centerFreq(88.5),
-			sampleRate(2),
-			freqRes(100),
-			cyclicFreqRes(10),
+			centerFreq(88.5),	// 88.5 Mhz center freq
+			sampleRate(0.512),	// 512 ksps = 512 khz BW
+			freqRes(sampleRate/32*100),		// sampleRate / 320 (1.6 khz)
+			cyclicFreqRes(freqRes/4), // freqRes / 4 (400 hz)
 			fileName("outputFile.txt")
 		{
 			argp_parse (&argp_i, argc, argv, 0, 0, this);
@@ -104,10 +104,10 @@ class Arguments
 		std::string fileName;
 };
 argp_option Arguments::options[] = {
-	{"center-frequency", 'f', "FREQ", 0, "Frequency in MHz [87kHz]"},
-	{"sample-rate", 'r', "RATE", 0, "Samplerate in Msamples/s [2,000ksps]"},
-	{"freq-res", 't', "FRES", 0, "Desired Frequency Resolution in kHz [10kHz]"},
-	{"cycfreq-res", 'c', "CYCRES", 0, "Desired Cyclic Frequency Resolution in kHz [100kHz]"},
+	{"center-frequency", 'f', "FREQ", 0, "Frequency in MHz [88.5 MHz]"},
+	{"sample-rate", 'r', "RATE", 0, "Samplerate in Msamples/s [0.512 Msps]"},
+	{"freq-res", 't', "FRES", 0, "Desired Frequency Resolution in kHz [sampleRate / 32 = 16 kHz]"},
+	{"cycfreq-res", 'c', "CYCRES", 0, "Desired Cyclic Frequency Resolution in kHz [freqRes / 4 = 4 kHz]"},
 	{"file-name", 'n', "FILE", 0, "File name for output data to be written to [outputFile.txt]"},
 	{0}
 };

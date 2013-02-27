@@ -56,6 +56,25 @@ class autofam_sink : public gr_block
 			m_dalpha(cycFreqRes),
 		    m_fileName(fileName)
 		{
+			m_test.resize(m_vector_length);
+
+			int Np(pow2roundup((int)std::ceil(m_fs/m_df)));
+			int L(Np/4);
+			int P(pow2roundup((int) std::ceil(m_fs/m_dalpha/L)));
+			int N(P*L);
+
+			printf("Sx(%i,%i)\n", Np+1, 2*N+1);
+
+			m_Sx.resize(Np+1, 2*N+1);
+
+			for (int i = 0; i < Np+1; i++)
+				for (int j = 0; j < 2*N+1; j++)
+					m_Sx(i,j) = 0;
+
+			m_count = 0;
+			for (int i = 0; i < m_vector_length; i++)
+				m_test(i) = 0;
+
 			filestr.open (m_fileName.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
 
 		}
@@ -68,44 +87,83 @@ class autofam_sink : public gr_block
 		virtual int general_work(int noutput_items, gr_vector_int &ninput_items, gr_vector_const_void_star &input_items, gr_vector_void_star &output_items)
 		{
 			// Test data
-			float testData[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-			m_vector_length = 16;
-			m_fs = 100;
-			m_df = 24;
-			m_dalpha = 12;
-			ProcessVector((&testData[0]));
-
-
-			// The real data
-//			for (int i = 0; i < ninput_items[0]; i++){
-//				ProcessVector(((float *)input_items[0]) + i * m_vector_length);
+//			std::complex<float> randData[m_vector_length];
+//			for (int i = 0; i < ninput_items[0]; i++)
+//			{
+//				for (int j = 0; j < m_vector_length; j++)
+//				{
+//					float rand1 = (float) std::rand()/(float) RAND_MAX;
+//					float rand2 = (float) std::rand()/(float) RAND_MAX;
+//					randData[j] = std::complex<float>(rand1,rand2);
+//				}
+//
+//				ProcessVector(randData);
 //			}
 
-			consume_each(ninput_items[0]);
-			printf("\nTest Over, completed\n");
-			// Testing so exit after 1 iteration
-			exit(-1);
+			// The real data
+			for (int i = 0; i < ninput_items[0]; i++)
+			{
+				ProcessVector(((std::complex<float> *)input_items[0]) + i * m_vector_length);
+			}
 
+			consume_each(ninput_items[0]);
 			return 0;
 		}
 		
-		void ProcessVector(float *input)
+		void ProcessVector(std::complex<float> *input)
 		{
 
+
+//			// Testing to give myself warm fuzzies.
+//
+//			fftw_complex *in, *out;
+//			fftw_plan fftPlan;
+//
+//			in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * m_vector_length);
+//			out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * m_vector_length);
+//			fftPlan = fftw_plan_dft_1d(m_vector_length, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+//
+//			m_count++;
+//
+//			for (int j = 0; j < m_vector_length; j++)
+//			{
+//				in[j][0] = input[j].real();
+//				in[j][1] = input[j].imag();
+//			}
+//
+//			fftw_execute(fftPlan); // Execute the FFT
+//
+//			// We FFT Shift each column as we read it out
+//			for (int j = 0; j < m_vector_length; j++)
+//			{
+//				if (j < m_vector_length/2)
+//					m_test(j) += std::abs(std::complex<double>(out[j][0],out[j][1]));
+//				else
+//					m_test(j) += std::abs(std::complex<double>(out[j][0],out[j][1]));
+//			}
+//
+//			// Clean up the FFT
+//			fftw_destroy_plan(fftPlan);
+//			fftw_free(in);
+//			fftw_free(out);
+//
+//
+//			if (m_count > 5000)
+//			{
+//				std::cout << m_test << std::endl;
+//				exit(-1);
+//			}
+
+			///////////////////////////////////////////////////////////////////
 
 			int Np(pow2roundup((int)std::ceil(m_fs/m_df)));
 			int L(Np/4);
 			int P(pow2roundup((int) std::ceil(m_fs/m_dalpha/L)));
 			int N(P*L);
 			int NN((P-1)*L + Np);
+
 			fftw_complex *in, *out;
 			fftw_plan fftPlan;
-
-			printf("Np = %i\n", Np);
-			printf("L = %i\n", L);
-			printf("P = %i\n", P);
-			printf("N = %i\n", N);
-			printf("NN = %i\n", NN);
 
 			MatrixXcd X(Np,P);
 			for (int k = 0; k < P; k++)
@@ -118,8 +176,6 @@ class autofam_sink : public gr_block
 						X(i,k) = 0;
 				}
 			}
-
-			std::cout << "Matrix X:\n" << X << std::endl;
 
 			std::vector<float> window = hamming(Np);
 
@@ -137,8 +193,6 @@ class autofam_sink : public gr_block
 			}
 
 			MatrixXcd XW = hammingMatrix * X;
-
-			std::cout << "Matrix XW:\n" << XW << std::endl;
 
 			in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Np);
 			out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Np);
@@ -170,8 +224,6 @@ class autofam_sink : public gr_block
 			fftw_free(in);
 			fftw_free(out);
 
-			std::cout << "Matrix XF1:\n" << XF1<< std::endl;
-
 			MatrixXcd E(Np,P);
 
 			for (int i = 0; i < Np; i++)
@@ -191,17 +243,12 @@ class autofam_sink : public gr_block
 				}
 			}
 
-			std::cout << "Matrix E:\n" << E << std::endl;
-
-			MatrixXcd XD(Np,P);
+			MatrixXcd XD(P,Np);  // Yes this is different than the matlab script b/c I do the transpose when loading it.
 
 			// I do the multiply and transpose at the same time here.
 			for (int i =0; i < Np; i++)
 				for (int j = 0; j < P; j++)
 					XD(j,i) = XF1(i,j) * E(i,j);
-
-			std::cout << "Matrix XD':\n" << XD << std::endl;
-
 
 			MatrixXcd XM(P,Np*Np);  // Our zero matrix
 
@@ -213,13 +260,14 @@ class autofam_sink : public gr_block
 						XM(x,k*Np+l) = XD(x,k)*std::conj(test);
 					}
 
-			std::cout << "Matrix XM:\n" << XM << std::endl;
 			/////////// Second FFT /////////////
 
 
 			in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * P);
 			out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * P);
 			fftPlan = fftw_plan_dft_1d(P, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+
+//			printf("Debug 7\n");
 
 			MatrixXcd XF2(P,Np*Np);
 
@@ -247,15 +295,11 @@ class autofam_sink : public gr_block
 			fftw_free(in);
 			fftw_free(out);
 
-			std::cout << "Matrix XF2:\n" << XF2 << std::endl;
-
 			Eigen::MatrixXd M(P/2+1,Np*Np);
 
 			for (int i = 0; i < P/2+1; i++)
 				for (int j = 0; j < Np*Np; j++)
 					M(i,j) = std::abs((std::complex<double>) XF2(i + P/4-1,j));
-
-			std::cout << "Matrix M:\n" << M << std::endl;
 
 			Eigen::VectorXd alpha0(2*N+1);
 			alpha0(0) = -1;
@@ -263,21 +307,15 @@ class autofam_sink : public gr_block
 			for (int i = 1; i < 2*N+1; i++)
 				alpha0(i) = alpha0(i-1) + 1.0/N;
 
-			std::cout << "Vector alpha0:\n" << alpha0 << std::endl;
-
 			Eigen::VectorXd fo(Np+1);
 			fo(0) = -0.5;
 
 			for (int i = 1; i < Np+1; i++)
 				fo(i) = fo(i-1) + 1.0/Np;
 
-			std::cout << "Vector fo:\n" << fo<< std::endl;
-
-			Eigen::MatrixXd Sx(Np+1,2*N+1);
-
 			for (int i = 0; i < Np+1; i++)
 				for (int j = 0; j < 2*N+1; j++)
-					Sx(i,j) = 0;
+					m_Sx(i,j) = 0;
 
 
 			double l, k, p, alpha, f;
@@ -311,13 +349,27 @@ class autofam_sink : public gr_block
 					{
 						kk = std::ceil(1 + Np*((double)f + 0.5));
 						ll = 1 + N*(alpha + 1);
-						Sx(kk-1,ll-1) = M(k1-1,k2-1);
+						m_Sx(kk-1,ll-1) += M(k1-1,k2-1);
+						m_count ++;
 					}
+
+					if (m_count > 5000)
+					{
+						printf("\n\n\n\n");
+						for (int i = 0; i < Np+1; i++)
+						{
+							for (int j = 0; j < 2*N+1; j++)
+							{
+								printf("%f ", m_Sx(i,j));
+							}
+							printf("\n");
+						}
+						exit(-1);
+					}
+
 				}
 			}
-
-			std::cout << "Matrix Sx:\n" << Sx << std::endl;
-
+			//printf("Debug 12\n");
 		}
 		
 		// Our osmo source
@@ -325,6 +377,10 @@ class autofam_sink : public gr_block
 
 		// Not sure if I'll use
 		int m_vector_length;
+		int m_count;
+
+		Eigen::VectorXd m_test;
+		Eigen::MatrixXd m_Sx;
 
 		double m_centerFreq;
 		double m_fs; // sample rate
