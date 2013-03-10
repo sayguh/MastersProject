@@ -44,6 +44,7 @@ int main(int argc, char **argv)
 
 void printRunParams(double centerFreq, double sampleRate, int fftWidth, double freqRes, double cycFreqRes, std::string fileName)
 {
+
 	printf("Center Frequency: \t%f\n", centerFreq);
 	printf("Sample Rate: \t%f\n", sampleRate);
 	printf("FFT Width: \t%i\n", fftWidth);

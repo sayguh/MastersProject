@@ -29,8 +29,8 @@ class Arguments
 	public:
 		Arguments(int argc, char **argv) :
 			centerFreq(88.5),	// 88.5 Mhz center freq
-			sampleRate(0.512),	// 512 ksps = 512 khz BW
-			freqRes(sampleRate/32*100),		// sampleRate / 320 (1.6 khz)
+			sampleRate(0.0441),	// 512 ksps = 512 khz BW
+			freqRes(sampleRate/16*100),		// sampleRate / 320 (1.6 khz)
 			cyclicFreqRes(freqRes/4), // freqRes / 4 (400 hz)
 			fileName("outputFile.txt")
 		{

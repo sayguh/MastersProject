@@ -69,8 +69,8 @@ X
 %%%%%%%%%%%%%
 % Windowing %
 %%%%%%%%%%%%%
-a=hamming(Np)
-XW=diag(a)*X
+a=hamming(Np);
+XW=diag(a)*X;
 
 %%%%%%%%%%%%%
 % First FFT %
@@ -81,33 +81,47 @@ XF1=fft(XW);
 %XF1=fftshift(XF1);
 %XF1=[XF1(:,P/2+1:P) XF1(:,1:P/2)];
 XF1=fftshift(XF1, 1)
-
+%surf(log(abs(XF1)));
+%title('FFT of data');
 %%%%%%%%%%%%%%%%%%
 % Downconversion %
 %%%%%%%%%%%%%%%%%%
+
+% This is doing a time shift to account for the shift in L on the data prior.  each column gets a shift of column # * L.
+
 E=zeros(Np,P);
 for k=-Np/2:Np/2-1
     for m=0:P-1
         E(k+Np/2+1,m+1)=exp(-i*2*pi*k*m*L/Np);
     end
 end
-P
-E
+
+
 XD=XF1.*E;
+
+
 %all this operation does is take a transpose and 2 complex conjugates
 %so the complex conjugate operations cancel each other out
 %XD=conj(XD');
-XD=transpose(XD);
+XD=transpose(XD)  % Prior to this, each column was a set of time, column 1 was t = 0 ... 4, column 2 was t = 2 .... 6 etc.
+% Now each row is time t = 0 .... 4, row 2 t = 2 .... 6 etc.
 
+%figure;surf(log(abs(XD))); title('Down conversion Trans');
 %%%%%%%%%%%%%%%%%%
 % Multiplication %
 %%%%%%%%%%%%%%%%%%
+
+%ylb so what the multiplication is doing, it puts a copy of the FFT in, scaled by FFT(0) then again by FFT(1) etc for all time.  
+% It's similar to the auto correlation of the FFT.
 XM=zeros(P,Np^2);
 for k=1:Np
     for l=1:Np
         XM(:,(k-1)*Np+l)=(XD(:,k).*conj(XD(:,l)));
     end
 end    
+
+
+%figure;surf(log(abs(XM))); title('Post Multiplication');
 
 %%%%%%%%%%%%%%
 % Second FFT %
@@ -117,11 +131,22 @@ XF2=fft(XM);
 %XF2=[XF2(:,Np^2/2+1:Np^2) XF2(:,1:Np^2/2)];
 XF2=fftshift(XF2,1);
 
+%figure;surf(log(abs(XF2))); title('FFT 2');
+
+
+% Here he is cutting out the high frequency and low frequency components, why?  
 XF2=XF2(P/4:3*P/4, :);
+
+%Get the magnitude
 M=abs(XF2);
 alphao=-1:1/N:1;
 fo=-.5:1/Np:.5;
 Sx=zeros(Np+1,2*N+1);
+
+
+% The size of M  is (P/2, Np^2)
+% The size of Sx is (Np+1, 2*N+1)
+
 for k1=1:P/2+1
     for k2=1:Np^2
         if rem(k2,Np)==0
@@ -129,6 +154,7 @@ for k1=1:P/2+1
         else
             l=rem(k2,Np)-Np/2-1;
         end
+	
         
         k=ceil(k2/Np)-Np/2-1;
         p=k1-P/4-1;
@@ -146,3 +172,4 @@ for k1=1:P/2+1
         end
     end
 end
+

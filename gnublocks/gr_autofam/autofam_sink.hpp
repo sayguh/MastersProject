@@ -66,10 +66,15 @@ class autofam_sink : public gr_block
 			printf("Sx(%i,%i)\n", Np+1, 2*N+1);
 
 			m_Sx.resize(Np+1, 2*N+1);
+			m_XF1.resize(Np,P);
 
 			for (int i = 0; i < Np+1; i++)
 				for (int j = 0; j < 2*N+1; j++)
 					m_Sx(i,j) = 0;
+
+			for (int i = 0; i < Np; i++)
+				for (int j = 0; j < P; j++)
+					m_XF1(i,j) = 0;
 
 			m_count = 0;
 			for (int i = 0; i < m_vector_length; i++)
@@ -113,49 +118,6 @@ class autofam_sink : public gr_block
 		void ProcessVector(std::complex<float> *input)
 		{
 
-
-//			// Testing to give myself warm fuzzies.
-//
-//			fftw_complex *in, *out;
-//			fftw_plan fftPlan;
-//
-//			in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * m_vector_length);
-//			out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * m_vector_length);
-//			fftPlan = fftw_plan_dft_1d(m_vector_length, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
-//
-//			m_count++;
-//
-//			for (int j = 0; j < m_vector_length; j++)
-//			{
-//				in[j][0] = input[j].real();
-//				in[j][1] = input[j].imag();
-//			}
-//
-//			fftw_execute(fftPlan); // Execute the FFT
-//
-//			// We FFT Shift each column as we read it out
-//			for (int j = 0; j < m_vector_length; j++)
-//			{
-//				if (j < m_vector_length/2)
-//					m_test(j) += std::abs(std::complex<double>(out[j][0],out[j][1]));
-//				else
-//					m_test(j) += std::abs(std::complex<double>(out[j][0],out[j][1]));
-//			}
-//
-//			// Clean up the FFT
-//			fftw_destroy_plan(fftPlan);
-//			fftw_free(in);
-//			fftw_free(out);
-//
-//
-//			if (m_count > 5000)
-//			{
-//				std::cout << m_test << std::endl;
-//				exit(-1);
-//			}
-
-			///////////////////////////////////////////////////////////////////
-
 			int Np(pow2roundup((int)std::ceil(m_fs/m_df)));
 			int L(Np/4);
 			int P(pow2roundup((int) std::ceil(m_fs/m_dalpha/L)));
@@ -173,7 +135,7 @@ class autofam_sink : public gr_block
 					if (k*L + i < m_vector_length)
 						X(i, k) = input[k*L + i];
 					else
-						X(i,k) = 0;
+						X(i,k) = std::complex<float>(0,0);
 				}
 			}
 
@@ -198,8 +160,6 @@ class autofam_sink : public gr_block
 			out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * Np);
 			fftPlan = fftw_plan_dft_1d(Np, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
 
-			MatrixXcd XF1(Np,P);
-
 			for (int i = 0; i < P; i++)
 			{
 				for (int j = 0; j < Np; j++)
@@ -214,9 +174,9 @@ class autofam_sink : public gr_block
 				for (int j = 0; j < Np; j++)
 				{
 					if (j < Np/2)
-						XF1(j+Np/2, i) = std::complex<double>(out[j][0],out[j][1]);
+						m_XF1(j+Np/2, i) = std::complex<double>(out[j][0],out[j][1]);
 					else
-						XF1(j-Np/2, i) = std::complex<double>(out[j][0],out[j][1]);
+						m_XF1(j-Np/2, i) = std::complex<double>(out[j][0],out[j][1]);
 				}
 			}
 			// Clean up the FFT
@@ -232,9 +192,11 @@ class autofam_sink : public gr_block
 
 			/*****************
 			* Down conversion *
+			* So I think this is a time shift *
 			******************/
 			std::complex<double> i;
 			i.imag(1);
+			i.real(0);
 
 			for (int k = -Np/2; k<Np/2; k++) {
 				for (int m = 0; m<P; m++) {
@@ -248,7 +210,7 @@ class autofam_sink : public gr_block
 			// I do the multiply and transpose at the same time here.
 			for (int i =0; i < Np; i++)
 				for (int j = 0; j < P; j++)
-					XD(j,i) = XF1(i,j) * E(i,j);
+					XD(j,i) = m_XF1(i,j) * E(i,j);	// So this is out time shift and it flips our image
 
 			MatrixXcd XM(P,Np*Np);  // Our zero matrix
 
@@ -266,8 +228,6 @@ class autofam_sink : public gr_block
 			in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * P);
 			out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * P);
 			fftPlan = fftw_plan_dft_1d(P, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
-
-//			printf("Debug 7\n");
 
 			MatrixXcd XF2(P,Np*Np);
 
@@ -349,12 +309,9 @@ class autofam_sink : public gr_block
 					{
 						kk = std::ceil(1 + Np*((double)f + 0.5));
 						ll = 1 + N*(alpha + 1);
-						m_Sx(kk-1,ll-1) += M(k1-1,k2-1);
-						m_count ++;
+						m_Sx(kk-1,ll-1) = M(k1-1,k2-1);
 					}
 
-					if (m_count > 5000)
-					{
 						printf("\n\n\n\n");
 						for (int i = 0; i < Np+1; i++)
 						{
@@ -365,11 +322,8 @@ class autofam_sink : public gr_block
 							printf("\n");
 						}
 						exit(-1);
-					}
-
 				}
 			}
-			//printf("Debug 12\n");
 		}
 		
 		// Our osmo source
@@ -381,6 +335,7 @@ class autofam_sink : public gr_block
 
 		Eigen::VectorXd m_test;
 		Eigen::MatrixXd m_Sx;
+		MatrixXcd m_XF1;
 
 		double m_centerFreq;
 		double m_fs; // sample rate

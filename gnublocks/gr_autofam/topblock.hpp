@@ -30,6 +30,7 @@
 #include <gr_top_block.h>
 #include <osmosdr_source_c.h>
 #include <gr_stream_to_vector.h>
+#include "gr_file_source.h"
 #include "autofam_sink.hpp"
 #include <string>
 
@@ -44,6 +45,7 @@ class TopBlock : public gr_top_block
 			N(P*L),
 			vector_length(N),
 			source(osmosdr_make_source_c()), /* OsmoSDR Source */
+			fileSource(gr_make_file_source(sizeof(float)*2, "/home/ylb/QAM16_44_1k.dat", false)),
 			stv(gr_make_stream_to_vector(sizeof(float)*2, vector_length)), /* Stream to vector */
 			/* autoFam - this does most of the interesting work */
 			sink(make_autofam_sink(source, vector_length, centerFreq, sampleRate, freqRes, cycFreqRes, fileName))
@@ -58,7 +60,7 @@ class TopBlock : public gr_top_block
 			source->set_if_gain(25.0);
 			
 			/* Set up the connections */
-			connect(source, 0, stv, 0);
+			connect(fileSource, 0, stv, 0);
 			connect(stv, 0, sink, 0);
 		}
 		
@@ -80,7 +82,7 @@ class TopBlock : public gr_top_block
 		int N;  // Number of points in the input data.
 		size_t vector_length;
 		std::vector<float> window;
-
+		gr_file_source_sptr fileSource;
 		osmosdr_source_c_sptr source;
 		gr_stream_to_vector_sptr stv;
 		autofam_sink_sptr sink;
