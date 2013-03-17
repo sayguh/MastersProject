@@ -1,56 +1,69 @@
-function [Sxa Ia] = mySxa();
+function [ansBlock Sxa Ia] = mySxa();
 
 
-%addpath('/home/ylb/workspace/gnuradio_src/gnuradio/gnuradio-core/src/utils/');
+addpath('/home/ylb/workspace/gnuradio_src/gnuradio/gnuradio-core/src/utils/');
 
 % Test BPSK Signal
-T = 2; % Seconds
-fc = 2048;
-rb = 2048;
-fs = 8192;
+%T = 7; % Seconds
+%fc = 2048; 
+%rb = 2048; 
+%fs = 4096;
+fs = 2000000/3;
 
 
-rawData = qamData(16, T);
-%rawData = qamData(4, T);
-%rawData = bpskData(4, T);
+sampleType = 'R';
 
-fftData = fftshift(fft(rawData));
-freq = linspace(-fs/2, fs/2, length(fftData));
+%simData = ssbData(T);
+%simData = amData(T);
+%simData = fmData(T);
+%simData = qamData(16, T);
+%simData = qamData(4, T);
+
+%simData = bpskData(fs, fc, rb, T, sampleType);
+%simData = qamData(fs, fc, rb, 4, T);
+
+
+%SNR
+%SNR = 10;
+
+%rawData = simData + awgn(simData, SNR, 'measured');
+
+%rawData = simData;
 
 %%%%%%%%%%%%%%%%%
 
 BlockSize = 512;
-maxCols = BlockSize;
+maxCols = 100;
 
 %Testing
 %maxCols = 4;
 %BlockSize = 8;
 
-%rawData = read_float_binary("/home/ylb/Fs_2M_Fc_108M.dat");
-%rawData = read_float_binary("/home/ylb/NBFM_44_1k_real.dat");
-%rawData = read_float_binary("/home/ylb/QAM4_44_1k_real.dat");
-
-
-
-%rawData = rand(BlockSize*maxCols,1);
-
-%Testing
-%rawData = 1:32;
+rawData = read_complex_binary("/home/ylb/complex_ctr_99_5M_samp_2M.dat");
+rawData = rand(1,BlockSize*maxCols);
+%Down sample
+rawData = rawData(1:3:end);
 
 numCols = min(floor(length(rawData)/BlockSize), maxCols);
 
 dataBlock = reshape(rawData(1:BlockSize*numCols), BlockSize, numCols);
 
+a=hamming(BlockSize);
+dataBlock=diag(a)*dataBlock;
+
 %You have to specify the dimention of the fftshift or else it does multiple dimentions.
-fftBlock = fftshift(fft(dataBlock), 1);
-
-
-%fftBlock = dataBlock;
-
+if sampleType == 'C'
+  fftBlock = fft(dataBlock);  % For some reason an fft shift isn't needed with complex data
+else
+  fftBlock = fftshift(fft(dataBlock), 1);
+end
+avgFFT = mean(transpose(fftBlock));
+figure; semilogy(linspace(-fs/2000,fs/2000,length(avgFFT)), abs(avgFFT));
+title('Average of FFT');
 
 ansBlock = zeros(BlockSize, BlockSize+1);
 
-
+% So alpha has a range in frequency of [-Fs/2, Fs/2] for real samples and [-Fs, Fs] for complex.
 for alpha = -BlockSize:2:BlockSize
   for col = 1:numCols
 
@@ -70,6 +83,7 @@ for alpha = -BlockSize:2:BlockSize
     Xplusa = Xplusa(:);
     Xmina = Xmina(:);
 
+    % I'm just averaging here.  Where N = numCols.  
     ansBlock(:, alpha/2+BlockSize/2+1) += Xplusa .* conj(Xmina);
   end
 
@@ -96,8 +110,14 @@ for alpha = -BlockSize:2:BlockSize
 
     Sxa(:,alpha/2+BlockSize/2+1) = ansBlock(:,alpha/2+BlockSize/2+1) ./ (SXplusa .* SXmina).^(1/2);
 end
-
+ansBlock(isnan(ansBlock))=0;
 Sxa(isnan(Sxa))=0;
 
 Ia = max(abs(Sxa));
 
+% Ia is semetrical around 0 so we only have to plot half of it
+numPoints = ceil(length(Ia)/2);
+alphaAdj = linspace(0,1,numPoints);
+
+figure; plot(alphaAdj, Ia(numPoints:end));
+title('Cycle Frequency Domain Profile');
