@@ -1,21 +1,19 @@
 function [ansBlock Sxa Ia] = mySxa();
 
 
-addpath('/home/ylb/workspace/gnuradio_src/gnuradio/gnuradio-core/src/utils/');
+%addpath('/home/ylb/workspace/gnuradio_src/gnuradio/gnuradio-core/src/utils/');
 
 % Test BPSK Signal
-%T = 7; % Seconds
-%fc = 2048; 
-%rb = 2048; 
-%fs = 4096;
-fs = 2000000/3;
+T = 7; % Seconds
+fc = 2048; 
+rb = 2048; 
+fs = 8192;
 
-
-sampleType = 'R';
+sampleType = 'C';
 
 %simData = ssbData(T);
 %simData = amData(T);
-%simData = fmData(T);
+simData = fmData(fs, fc, T, sampleType);
 %simData = qamData(16, T);
 %simData = qamData(4, T);
 
@@ -28,7 +26,7 @@ sampleType = 'R';
 
 %rawData = simData + awgn(simData, SNR, 'measured');
 
-%rawData = simData;
+rawData = simData;
 
 %%%%%%%%%%%%%%%%%
 
@@ -39,10 +37,10 @@ maxCols = 100;
 %maxCols = 4;
 %BlockSize = 8;
 
-rawData = read_complex_binary("/home/ylb/complex_ctr_99_5M_samp_2M.dat");
-rawData = rand(1,BlockSize*maxCols);
+%rawData = read_complex_binary("/home/ylb/complex_ctr_99_5M_samp_2M.dat");
+%rawData = rand(1,BlockSize*maxCols);
 %Down sample
-rawData = rawData(1:3:end);
+%rawData = rawData(1:3:end);
 
 numCols = min(floor(length(rawData)/BlockSize), maxCols);
 
