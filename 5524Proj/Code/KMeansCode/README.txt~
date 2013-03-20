@@ -1,0 +1,12 @@
+kMeans.m:
+  Given data points, a threshhold and initial centers, this finds the kMeans converged centers.
+
+kMeansClassifier:
+  Calls kMeans and runs it for each modulation and returns the estimated modulation value M.  (2, 4, 16 or 64)
+
+TestKMeansNumPoints:
+  Calls kMeansClassifier and runs it for 100, 200, 300...1000 points
+
+NearestNeighbor.m
+  Finds the nearest neighbor given a point and a list of class centers
+  

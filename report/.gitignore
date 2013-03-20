@@ -1,0 +1,10 @@
+*.pdf
+*.txt
+*.o
+*.d
+*.dat
+*.aux
+*.log
+*.gz
+gr_autofam
+

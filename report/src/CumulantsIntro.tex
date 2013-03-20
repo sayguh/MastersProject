@@ -1,0 +1,81 @@
+\chapter{Cumulant Method}
+
+In ``Hierarchical Digital Modulation Classification Using Cumulants''
+\cite{swami2000}, Ananthram Swami and Brian Sadler use forth order cumulants as
+a hierarchical modulation classifier for BPSK, MPAM, MQAM, PSK, V32, V29, V29c
+and 8AMPM modulations. A cumulant is a high order statistic which can be used to
+characterize the shape and distribution of a input signal\cite{swami2000}.
+Equations \ref{eq:C_21} through ~\ref{eq:C_4k} describe the calculations
+required to compute the cumulant.  
+
+The statistics $\hat{C}_{40}$ and $\hat{C}_{42}$ are robust to noise and when
+the absolute value of $\hat{C}_{40}$ is used they are phase invariant.  Using
+$\hat{C}_{4k}$ causes the statistic to remain invarient to linear scaling
+\cite{swami2000}.
+
+\begin{equation}
+\hat{C}_{21} = \frac{1}{N} \sum_{n=1}^{N} |y^2(n)|
+\label{eq:C_21}
+\end{equation}
+
+\begin{equation}
+\hat{C}_{20} = \frac{1}{N} \sum_{n=1}^{N} y^2(n)
+\label{eq:C_20} 
+\end{equation}
+
+\begin{equation}
+\hat{C}_{40} = \frac{1}{N} \sum_{n=1}^{N} y^4(n) - 3 \hat{C}_{20}^2
+\label{eq:C_40} 
+\end{equation}
+
+\begin{equation}
+\hat{C}_{41} = \frac{1}{N} \sum_{n=1}^{N} y(n)^3 y^*(n) - \hat{C}_{20}\hat{C}_21
+\label{eq:C_41}
+\end{equation}
+
+\begin{equation}
+\hat{C}_{42} = \frac{1}{N} \sum_{n=1}^{N} |y^4(n)|-|\hat{C}_{20}|-2\hat{C}_{21}
+\label{eq:C_42} 
+\end{equation}
+
+\begin{equation}
+\tilde{C}_{4k} = \frac{\hat{C}_{4k}}{C_{21}^2}
+\label{eq:C_4k}  
+\end{equation}
+
+Using Table~\ref{tab:cumulantStat}, the theoretical cumulant values for each of
+the modulations of interest can be compared to their experimental values.  Since
+no assumption about or effort is made to establish a sycronise phase lock with
+the input signal, the phase invarient $|\hat{C}_{40}|$ is used as the determining
+statistic.  The theoretical value with the shortest euclidean distance is chosen
+as the estimated modulation scheme.
+
+
+\begin{table}
+\caption{Theoretical Cumulant Statistics \cite{swami2000}}
+\begin{tabular}{ l | r | r| r| r| r } \hline
+Constellation	& $C_{40}$ & $C_{42}$ & $N var(\hat{C}_{40})$ & $N var(\hat{C}_{42}) $ & $N var_1 (\hat{C}_{42})$ \\ \hline \hline
+BPSK & -2.0000 & -2.0000 & 0.00 & 0.00 & 36.00 \\ \hline \hline
+PAM(4) & -1.3600 & -1.3600 & 2.56 & 2.56 & 34.72 \\ 
+PAM(8) & -1.2381 & -1.2381 & 4.82 & 4.82 & 32.27 \\
+PAM(16) & -1.2094 & -1.2094 & 5.52 & 5.52 & 31.67 \\
+PAM(32) & -1.2024 & -1.2024 & 5.70 & 5.70 & 31.52 \\ 
+PAM(64) & -1.2006 & -1.2006 & 5.74 & 5.74 & 31.49 \\
+PAM($\infty$) & -1.2000 & -1.2000 & 5.76 & 5.76 & 31.47 \\ \hline \hline
+PSK(4) & 1.0000 & -1.0000 & 0.00 & 0.00 & 12.00 \\ \hline
+PSK($>$4) & 0.000 & -1.0000 & 1.00 & 0.00 & 12.00 \\ \hline \hline
+V32 & 0.1900 & -0.6900 & 2.86 & 1.18 & 9.70 \\ \hline
+V29 & 0.5185 & -0.5816 & 3.51 & 1.77 & 8.75 \\
+QAM($\infty$) & -0.6000 & -0.6000 & 3.91 & 2.31 & 8.59 \\
+QAM(32,32) & -0.6012 & -0.6012 & 3.89 & 2.29 & 8.61 \\
+QAM(16,16) & -0.6047 & -0.6047 & 3.83 & 2.24 & 8.65 \\ 
+QAM(8,8) & -0.6191 & -0.6191 & 3.58 & 2.06 & 8.82 \\
+QAM(4,4) & -0.6800 & -0.68 & 2.66 & 1.38 & 9.54 \\ \hline
+V29c & -1.2000 & -0.6400 & 1.85 & 1.44 & 9.12 \\ \hline
+8AMPM & -0.5600 & -0.72 & 2.66 & 1.38 & 9.54 \\ \hline 
+\end{tabular}
+\label{tab:ModelAndFreq}
+\label{tab:cumulantStat}
+\end{table}
+
+

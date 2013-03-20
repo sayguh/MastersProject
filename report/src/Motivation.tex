@@ -1,0 +1,47 @@
+\chapter{Motivation}
+
+The Software Defined Radio (SDR) hobby community has generally rallied around
+the Universal Software Radio Peripheral (USRP) however the costs of a USRP can
+range from \$1500 to \$3000 depending on daughter board configuration and
+application.  This has prevented wide adotption among the more novice or budget
+focued developer. In early 2012 a linux kernal developer, Antti Palosaari, found
+that the RTL2832U chipset found within a low cost USB DVB-T tuner
+could be used as a simple SDR.  Due to their low cost, \$12 to \$20, a
+small community has cropped up and begun development of GnuRadio blocks and
+applications using this hardware.
+
+The RTL2832U chipset is found in a variety of tuner models and provide a range of frequencies.
+Table~\ref{tab:ModelAndFreq} shows the supported hardware models and
+cooresponding frequency ranges.  The RTL2832U (RTL-SDR) chipset outputs 8-bit
+I/Q samples and can support sample rates as high as 2.4 MS/s without dropping samples.  
+
+\begin{table}
+\caption{Tuner Model and Frequency Range Supported}
+\begin{tabular}{| l | l |} \hline
+Tuner	& Frequency range \\ \hline
+Elonics E4000	& 52 - 1100 Mhz and 1250 - 2200 MHz 1250 MHz \\ \hline
+Rafael Micro R820T &	24 - 1766 MHz \\ \hline
+Fitipower FC0013 & 22 - 1100 MHz  \\ \hline
+Fitipower FC0012 &	22 - 948.6 MHz \\ \hline
+FCI FC2580	& 146 - 308 MHz and 438 - 924 MHz \\ \hline
+\end{tabular}
+\label{tab:ModelAndFreq}
+\end{table}
+
+In the past, people have been able to use the RTL2832U to succeffully
+receive and decode broadcast FM and air traffic AM radio, TETRA, GMR, GSM, ADS-B
+and POCSAG.  This investigation intends to determine its use for signal
+identification and classification, a challenging task due to its low signal to
+noise ratio, high DC bias, and relativly low sample resolution.  Two
+modulation detection methods are proposed, one determining the modulation
+based on time domain forth order cumulants.  The second using cyclostationary
+statistics found in the frequency domain.  Prototyping of the alogorithms
+is done in Octave and tested with a controlled simulated input. 
+After characterizing the algorithms they will be converted into C++ code
+within a GnuRadio for testing with the hardware. 
+
+The long term goal and motivation for this project is to create a REDHAWK C++
+component along with a RTL-SDR Device and run a domain consisting of multiple
+RTL-SDR Devices so that identification and possibly rough geolocation 
+estimation may occur through a network of low cost RTL-SDRs.
+
