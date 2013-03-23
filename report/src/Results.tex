@@ -1,2 +1,23 @@
 \chapter{Simulation Results}
 
+Both methods were tested in Octave at -3dB, 0dB, 3dB, 5dB, and 10dB SNR.  As
+test data, AM, Single Side Band AM, FM, BPSK, QAM, 16QAM, and 64QAM data was
+used.  Each signal was modulated at 2048 Hz and sampled at 8192 Hz with complex
+sampling being used.  This resulted in an over sampling rate of four.  For each
+of the digital modulation schemes, a symbol rate equal to the center frequency
+of 2048 Hz was used.
+
+\section{Cumulant Method}
+
+The cumulant algorithm works in the time domain and assumes that the signal of
+interest has been shifted to baseband.  Prior to running each of the data sets
+through the cumulant algorithm, the signal was first frequency shifted to
+baseband and then down sampled by a factor of four.  
+
+While \cite{swami2000} does not cover FM Modulation, an FM signal in the IQ
+domain can be seen has a rotating phasor which given that the Cumulant Method is
+phase invarient should result in the classification of M-PSK signal with M
+approaching inifinity.  
+
+
+ 

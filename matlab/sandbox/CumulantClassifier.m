@@ -1,4 +1,4 @@
-function M = CumulantClassifier(scaledPoints)
+function [M C40 C42] = CumulantClassifier(scaledPoints)
 
 % Here are the theoretical values for our classifier.
 % M  |C40| C42
@@ -7,6 +7,10 @@ lookUpTable = [[2 2 -2]; [4 1 -1]; [16 0.68 -0.68]; [64 0.6191 -0.6191]];
 % We compute the cumulants, note that C40 is NOT rotation invariant but |C40| is.
 [C20, C21, C40, C41, C42] = Cumulant(scaledPoints);
 
+% Normalize by C21
+C40 = C40/C21^2;
+C41 = C41/C21^2;
+C42 = C42/C21^2;
 
 [row col] = size(lookUpTable);
 

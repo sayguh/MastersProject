@@ -18,18 +18,40 @@ dataSet.SNRArray = [-3, 0, 3, 5, 10];
 
 fc = 2048; %Hz Center Freq
 fs = 8192; %Hz Over sample
-rs = 2048; %Hz symbol per cycle for digital mods
+rb = 2048; %Hz symbol per cycle for digital mods and BW for AM mod.
 T = 5; %s Five seconds worth of data
 sampleType = 'C'; % Denotes we want complex samples not real ones.
 
-dataSet.AMdata = amData(fs, fc, T, sampleType);
-dataSet.SSBdata = ssbData(fs, fc, T, sampleType);
-dataSet.FMdata = fmData(fs, fc, T, sampleType);
+
+printf('Creating AM Data Set\n');
+fflush(stdout);
+dataSet.AMdata = amData(fs, fc, rb, T, sampleType);
+
+printf('Creating SSBAM Data Set\n');
+fflush(stdout);
+dataSet.SSBdata = ssbData(fs, fc, rb, T, sampleType);
+
+printf('Creating FM Data Set\n');
+fflush(stdout);
+dataSet.FMdata = fmData(fs, fc, rb, T, sampleType);
+
+printf('Creating BPSK Data Set\n');
+fflush(stdout);
 dataSet.BPSKdata = bpskData(fs, fc, rb, T, sampleType);
+
+printf('Creating QAM Data Set\n');
+fflush(stdout);
 dataSet.QAMdata = qamData(fs, fc, rb, 4, T, sampleType);
+
+printf('Creating QAM16 Data Set\n');
+fflush(stdout);
 dataSet.QAM16data = qamData(fs, fc, rb, 16, T, sampleType);
+
+printf('Creating QAM64 Data Set\n');
+fflush(stdout);
 dataSet.QAM64data = qamData(fs, fc, rb, 64, T, sampleType);
 
-
+printf('Saving Data Set\n');
+fflush(stdout);
 save('testDataSet.mat', 'dataSet');
 
