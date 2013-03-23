@@ -51,16 +51,27 @@ In practice, there is a trade off here.  We may either increase our time
 interval $T$ which is refered to as time smoothing, or smooth over the frequency
 domain by using a smaller Fourier transform size.
 
-\begin{comment}
-Next talk about how the SCD is a 3 dimentional plot and can be used to
-determine the modulation but is not a comutationally efficient metric.
+Like most density functions, the SCD may be scaled to correlation
+coefficient that limits its domain to $[0,1]$. This is refered to as the
+spectral coherence (SC) and is defined in \ref{eq:specCohDef}.
 
-Go into the Spectral coherence as a better metric.
-\end{comment}
+\begin{equation}
+C_{x}^{\alpha}(f) \triangleq \frac{S_x^{\alpha}(f)}{\sqrt{S(f+\alpha/2)S(f-\alpha/2)}}
+\label{eq:specCohDef}
+\end{equation}
 
 
-\section{Experimental Matlab Results}
+Both the SCD and SC form a 2 dimentional matrix which is often
+too large to use as a sensible modulation metric.  Instead, \cite{kim2007}
+proposes the concept of the Cycle Frequency Domain Profile (CDP) by taking the
+maximum value of the SC over the frequency domain.
+
+\begin{equation}
+I(\alpha) \triangleq \max_f |C_x^{\alpha}(f)|
+\label{eq:CdpDef}
+\end{equation}
+
+The cycle frequency domain profile of known signals can be created and compared
+to experimental results to determine the appropriate modulation type.
 
 
-\section{RTL SDR}
-\section{gnuRadio}

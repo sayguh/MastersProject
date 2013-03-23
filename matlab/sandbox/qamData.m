@@ -1,4 +1,9 @@
-function rawData = qamData(fs, fc, rb, m, T)
+function rawData = qamData(fs, fc, rb, m, T, sampleType)
+
+if sampleType == 'C'
+  fs = fs*2;
+end
+
 
 % m is the number of points in constellation
 
@@ -25,3 +30,8 @@ while (length(input1) < length(carrier1))
 endwhile
 
 rawData = input1(1:length(carrier1)).*carrier1 + input2(1:length(carrier2)).*carrier2;
+
+if sampleType == 'C'
+  rawData = hilbert(rawData);
+  rawData = rawData(1:2:end);
+end

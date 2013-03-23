@@ -3,7 +3,6 @@ function [ansBlock Sxa Ia] = mySxa();
 
 %addpath('/home/ylb/workspace/gnuradio_src/gnuradio/gnuradio-core/src/utils/');
 
-% Test BPSK Signal
 T = 7; % Seconds
 fc = 2048; 
 rb = 2048; 
