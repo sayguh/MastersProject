@@ -14,18 +14,12 @@ shiftedSignal = freqShift(noisySig, Fc, Fs);
 IQdata = real(shiftedSignal(1:4:end-1)) + i*imag(shiftedSignal(2:4:end));
 
 % Scale the data to the unit circle.
+% Probably not necessary since we scale the result but whatever
 IQdata = IQdata/abs(max(IQdata));
 
 %figure; plot(abs(fft(IQdata)));
-figure; plot(real(IQdata), imag(IQdata), 'o');
+%figure; plot(real(IQdata), imag(IQdata), 'o');
 
 [M C40 C42] = CumulantClassifier(IQdata);
 
-
-
-
-
-
-% Not exactly sure why my generated data is off but this is needed to get a clean plot
-%figure; plot(real(shiftedData(1:2:end-1)), imag(shiftedData(2:2:end)),'o')
 

@@ -2,8 +2,8 @@ function [M C40 C42] = CumulantClassifier(scaledPoints)
 
 % Here are the theoretical values for our classifier.
 % M  |C40| C42
-% I'm making it so FM is -1 and AM is -2 and SSB is -3
-lookUpTable = [[-3 0.079237 0]; [-2 0 0.40723]; [-1 0 -1]; [2 2 -2]; [4 1 -1]; [16 0.68 -0.68]; [64 0.6191 -0.6191]];
+% I'm making it so FM is -1 and AM is -3 and SSB is -2
+lookUpTable = [[-3 0.040723 0.040723]; [-2 0.079237 0]; [-1 0 -1]; [2 2 -2]; [4 1 -1]; [16 0.68 -0.68]; [64 0.6191 -0.6191]];
 
 % We compute the cumulants, note that C40 is NOT rotation invariant but |C40| is.
 [C20, C21, C40, C41, C42] = Cumulant(scaledPoints);
