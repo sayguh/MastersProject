@@ -1,45 +1,10 @@
-function [ansBlock Sxa Ia] = mySxa();
+function [ansBlock Sxa Ia] = mySxa(rawData, sampleType, BlockSize, maxCols);
 
+
+% Make BlockSize 512 and maxCols 100
 
 %addpath('/home/ylb/workspace/gnuradio_src/gnuradio/gnuradio-core/src/utils/');
-
-T = 7; % Seconds
-fc = 2048; 
-rb = 2048; 
-fs = 8192;
-
-sampleType = 'C';
-
-%simData = ssbData(T);
-%simData = amData(T);
-simData = fmData(fs, fc, T, sampleType);
-%simData = qamData(16, T);
-%simData = qamData(4, T);
-
-%simData = bpskData(fs, fc, rb, T, sampleType);
-%simData = qamData(fs, fc, rb, 4, T);
-
-
-%SNR
-%SNR = 10;
-
-%rawData = simData + awgn(simData, SNR, 'measured');
-
-rawData = simData;
-
-%%%%%%%%%%%%%%%%%
-
-BlockSize = 512;
-maxCols = 100;
-
-%Testing
-%maxCols = 4;
-%BlockSize = 8;
-
 %rawData = read_complex_binary("/home/ylb/complex_ctr_99_5M_samp_2M.dat");
-%rawData = rand(1,BlockSize*maxCols);
-%Down sample
-%rawData = rawData(1:3:end);
 
 numCols = min(floor(length(rawData)/BlockSize), maxCols);
 
@@ -54,9 +19,9 @@ if sampleType == 'C'
 else
   fftBlock = fftshift(fft(dataBlock), 1);
 end
-avgFFT = mean(transpose(fftBlock));
-figure; semilogy(linspace(-fs/2000,fs/2000,length(avgFFT)), abs(avgFFT));
-title('Average of FFT');
+%avgFFT = mean(transpose(fftBlock));
+%figure; semilogy(linspace(-fs/2000,fs/2000,length(avgFFT)), abs(avgFFT));
+%title('Average of FFT');
 
 ansBlock = zeros(BlockSize, BlockSize+1);
 

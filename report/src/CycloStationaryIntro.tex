@@ -7,10 +7,10 @@ introduction to Cyclostationary detection \cite{costa1996} contains a lengthy in
 examples calculating the theoretical Spectral Correlation Density Function for
 an amplitude modulated carrier.
 
-The bulk of the work from this section is a summerization of the work found in
-\cite{kim2007}.  A process $x(t)$ is said to be clyclostationary in wide sense
-if its mean and autocorrelation are periodic with a period $T_0$.  This may also be expressed as; $M_x(t+T_0) = M_x(t)$ and $R_x(t+T_0, u + T_0) = R_x(t,u)$ \cite{kim2007}. 
-We can represent the cyclic autocorrelation function in terms of $t$ and
+The bulk of the work from this section is a summarization of the work found in
+\cite{kim2007}.  A process $x(t)$ is said to be cyclostationary in wide sense
+if its mean and auto-correlation are periodic with a period $T_0$.  This may also be expressed as; $M_x(t+T_0) = M_x(t)$ and $R_x(t+T_0, u + T_0) = R_x(t,u)$ \cite{kim2007}. 
+We can represent the cyclic auto-correlation function in terms of $t$ and
 $\tau$; $R_x(t+\tau/2, t-\tau/2)$ and then, due to its repetitive nature,
 rewrite it as a sum of its periodic components in a Fourier Series as shown in
 Equation \ref{eq:autoFourier}.
@@ -23,7 +23,7 @@ R_x(t+\tau/2, t- \tau/2) = \sum_{\alpha} R_x^{\alpha}(\tau)e^{j2\pi \alpha t}
 Where $\alpha = m/T_0$ and $m$ is an integer. 
 
 The spectral correlation function (SCF) is defined as the Fourier transform of
-this cyclic autocorrelation from Equation \ref{eq:autoFourier}.
+this cyclic auto-correlation from Equation \ref{eq:autoFourier}.
 
 \begin{equation}
 S_x^{\alpha}(f) = \int_{-\infty}^{\infty} R_x^{\alpha}(\tau)e^{-j2\pi f \tau} d\tau
@@ -48,11 +48,11 @@ S_{x_T}^{\alpha}(t,f) \triangleq \frac{1}{T} X_T(t,f + \alpha / 2)X_T^*(t,f - \a
 \end{equation}
 
 In practice, there is a trade off here.  We may either increase our time
-interval $T$ which is refered to as time smoothing, or smooth over the frequency
+interval $T$ which is referred to as time smoothing, or smooth over the frequency
 domain by using a smaller Fourier transform size.
 
 Like most density functions, the SCD may be scaled to correlation
-coefficient that limits its domain to $[0,1]$. This is refered to as the
+coefficient that limits its domain to $[0,1]$. This is referred to as the
 spectral coherence (SC) and is defined in \ref{eq:specCohDef}.
 
 \begin{equation}
@@ -61,7 +61,7 @@ C_{x}^{\alpha}(f) \triangleq \frac{S_x^{\alpha}(f)}{\sqrt{S(f+\alpha/2)S(f-\alph
 \end{equation}
 
 
-Both the SCD and SC form a 2 dimentional matrix which is often
+Both the SCD and SC form a 2 dimensional matrix which is often
 too large to use as a sensible modulation metric.  Instead, \cite{kim2007}
 proposes the concept of the Cycle Frequency Domain Profile (CDP) by taking the
 maximum value of the SC over the frequency domain.
@@ -73,5 +73,11 @@ I(\alpha) \triangleq \max_f |C_x^{\alpha}(f)|
 
 The cycle frequency domain profile of known signals can be created and compared
 to experimental results to determine the appropriate modulation type.
+
+============ NOTES =============
+I need to talk about how digitally modulated signals output spikes while analog
+modulated signals end up having a relatively constant domain profile.  This can
+be used to do a preliminary separation of the two modulation types.
+
 
 
