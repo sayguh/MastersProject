@@ -4,7 +4,7 @@ function [M C40 C42] = testCumulant(input, SNR, Fc, Fs)
 % the IQ plot will start to spin and it'll do a poor job of classifying.
 
 % Add noise to the signal to the desired SNR
-noisySig = input + awgn(input, SNR, 'measured');
+noisySig = awgn(input, SNR, 'measured');
 
 % Shift the sigal to baseband.
 shiftedSignal = freqShift(noisySig, Fc, Fs);
