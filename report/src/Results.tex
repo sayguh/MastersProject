@@ -1,7 +1,7 @@
 \chapter{Simulation Results}
 
-Both methods were tested in Octave at -3dB, 0dB, 3dB, 5dB, and 10dB SNR.  As
-test data, AM, Single Side Band AM, FM, BPSK, QAM, 16QAM, and 64QAM data was
+Both methods were tested in Octave at -3dB, 0dB, 3dB, 5dB, 10dB, and 15dB SNR. 
+As test data, AM, Single Side Band AM, FM, BPSK, QAM, 16QAM, and 64QAM data was
 used.  Each signal was modulated at 2048Hz and sampled at 8192Hz with complex
 sampling being used.  This resulted in an over sampling rate of four.  For each
 of the digital modulation schemes, a symbol rate equal to the center frequency
@@ -25,22 +25,30 @@ through the cumulant algorithm, the signal was first frequency shifted to
 baseband and then down sampled by a factor of four.  The signal was then sent
 into the Cumulant algorithm for classification.  For each of the modulation
 types, each correct hit as well as each false positive was noted.  For each
-SNR level, one hundred tests were run for each of the modulation types.  The
-number of data points was varied and the outcome of each test case is shown in
-tables \ref{tab:cumHit100pt} - \ref{tab:cumFalsePositive10000pt}.
+SNR level, one hundred tests were run for each of the modulation types.  
+The number of data points used was varied and the outcome of each test case is
+shown in tables \ref{tab:cumHit100pt} - \ref{tab:cumFalsePositive10000pt}.  The
+number of data points takes into account the down sampling, ie. if 1000 data
+points were used for the Cumulant algorithm, 4000 data points had been down
+sampled.
+Based on the observed simulated results, the Cumulant method performs fairly
+well with limited data points.  The algorithm tends to favor the higher modulation
+scheme of QAM64 when given an amplitude modulated data set and a large number of
+data points.  The Cumulant method has the most difficulty with the QAM16 dataset
+and would regularly classify it as QAM64.
 
 \begin{table}
 \caption{Cumulant Results, Hits: 100 data Points}
 \centering
-\begin{tabular}{ l | c | c | c | c | c } \hline
-SNR &	 -3 &	 0 &	 3 &	 5 &	 10\\ \hline \hline 
-AM &	 12 &	 13 &	 36 &	 41 &	 94 \\ \hline 
-SSB &	 32 &	 56 &	 66 &	 71 &	 92 \\ \hline 
-FM &	 0 &	 0 &	 0 &	 0 &	 0 \\ \hline 
-BPSK &	 0 &	 9 &	 91 &	 100 &	 100 \\ \hline 
-QAM &	 0 &	 6 &	 29 &	 85 &	 100 \\ \hline 
-QAM16 &	 5 &	 6 &	 8 &	 6 &	 1 \\ \hline 
-QAM64 &	 66 &	 76 &	 65 &	 54 &	 29 \\ \hline
+\begin{tabular}{ l | c | c | c | c | c | c } \hline
+SNR   &	 -3 &	 0 &	 3 &	 5 &	 10 &	 15\\ \hline \hline 
+AM    &	 3 &	 19 &	 29 &	 31 &	 60 &	 99 \\ \hline 
+SSB   &	 86 &	 78 &	 79 &	 79 &	 86 &	 91 \\ \hline 
+FM    &	 0 &	 0 &	 0 &	 0 &	 0 &	 0 \\ \hline 
+BPSK  &	 0 &	 0 &	 0 &	 0 &	 100 &	 100 \\ \hline 
+QAM   &	 0 &	 0 &	 0 &	 0 &	 36 &	 100 \\ \hline 
+QAM16 &	 0 &	 0 &	 0 &	 2 &	 35 &	 98 \\ \hline 
+QAM64 &	 11 &	 26 &	 45 &	 81 &	 99 &	 100 \\ \hline 
 \end{tabular}
 \label{tab:cumHit100pt}
 \end{table}
@@ -48,15 +56,15 @@ QAM64 &	 66 &	 76 &	 65 &	 54 &	 29 \\ \hline
 \begin{table}
 \caption{Cumulant Results, False Positives: 100 data Points}
 \centering
-\begin{tabular}{ l | c | c | c | c | c } \hline
-SNR &	 -3 &	 0 &	 3 &	 5 &	 10 \\ \hline \hline
-AM &	 1.0 &	 1.6 &	 2.0 &	 1.0 &	 0.4 \\ \hline 
-SSB &	 14.9 &	 13.6 &	 9.6 &	 8.9 &	 0.9 \\ \hline 
-FM &	 1.9 &	 1.9 &	 1.7 &	 1.9 &	 0.9 \\ \hline 
-BPSK &	 0.0 &	 0.7 &	 10.0 &	 14.1 &	 14.3 \\ \hline 
-QAM &	 21.1 &	 26.6 &	 5.6 &	 0.1 &	 0.0 \\ \hline 
-QAM16 &	 11.6 &	 12.0 &	 15.0 &	 8.7 &	 10.1 \\ \hline 
-QAM64 &	 33.1 &	 20.0 &	 14.0 &	 14.3 &	 14.0 \\ \hline
+\begin{tabular}{ l | c | c | c | c | c | c } \hline
+SNR   &	 -3 &	 0 &	 3 &	 5 &	 10 &	 15\\ \hline \hline 
+AM &	 1.6 &	 1.4 &	 0.7 &	 0.4 &	 0.0 &	 0.0 \\ \hline 
+SSB &	 62.6 &	 40.0 &	 21.9 &	 12.9 &	 5.7 &	 0.1 \\ \hline 
+FM &	 0.1 &	 0.3 &	 0.4 &	 0.6 &	 0.1 &	 0.0  \\ \hline 
+BPSK &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.1 &	 14.3 \\ \hline 
+QAM &	 0.0 &	 0.0 &	 13.4 &	 28.1 &	 14.1 &	 0.0 \\ \hline 
+QAM16 &	 0.1 &	 3.7 &	 12.6 &	 1.9 &	 9.1 &	 0.0 \\ \hline 
+QAM64 &	 21.3 &	 37.0 &	 29.1 &	 28.6 &	 11.3 &	 1.6 \\ \hline
 \end{tabular}
 \label{tab:cumFalsePositive100pt}
 \end{table}
@@ -65,15 +73,15 @@ QAM64 &	 33.1 &	 20.0 &	 14.0 &	 14.3 &	 14.0 \\ \hline
 \begin{table}
 \caption{Cumulant Results, Hits: 1,000 data Points}
 \centering
-\begin{tabular}{ l | c | c | c | c | c } \hline
-SNR &	 -3 &	 0 &	 3 &	 5 &	 10\\ \hline \hline 
-AM &	 25 &	 51 &	 59 &	 80 &	 100 \\ \hline 
- SSB &	 91 &	 88 &	 88 &	 92 &	 100 \\ \hline 
-FM &	 0 &	 0 &	 0 &	 0 &	 0 \\ \hline 
-BPSK &	 0 &	 0 &	 100 &	 100 &	 100 \\ \hline 
-QAM &	 0 &	 0 &	 0 &	 92 &	 100 \\ \hline 
-QAM16 &	 0 &	 0 &	 0 &	 0 &	 25 \\ \hline 
-QAM64 &	 37 &	 98 &	 100 &	 100 &	 100 \\ \hline
+\begin{tabular}{ l | c | c | c | c | c | c } \hline
+SNR   &	 -3 &	 0 &	 3 &	 5 &	 10 &	 15\\ \hline \hline 
+AM    &	 9 &	 20 &	 20 &	 39 &	 75 &	 95 \\ \hline 
+SSB   &	 81 &	 81 &	 81 &	 95 &	 99 &	 100 \\ \hline 
+FM    &	 0 &	 0 &	 8 &	 96 &	 100 &	 100 \\ \hline 
+BPSK  &	 0 &	 0 &	 0 &	 0 &	 100 &	 100 \\ \hline 
+QAM   &	 0 &	 0 &	 0 &	 0 &	 4 &	 100 \\ \hline 
+QAM16 &	 0 &	 0 &	 0 &	 0 &	 0 &	 33 \\ \hline 
+QAM64 &	 0 &	 0 &	 5 &	 93 &	 100 &	 100 \\ \hline 
 \end{tabular}
 \label{tab:cumHit1000pt}
 \end{table}
@@ -81,15 +89,15 @@ QAM64 &	 37 &	 98 &	 100 &	 100 &	 100 \\ \hline
 \begin{table}
 \caption{Cumulant Results, False Positives: 1,000 data Points}
 \centering
-\begin{tabular}{ l | c | c | c | c | c } \hline
-SNR &	 -3 &	 0 &	 3 &	 5 &	 10 \\ \hline \hline 
-AM &	 1.3 &	 1.6 &	 1.7 &	 1.1 &	 0.0 \\ \hline 
-SSB &	 28.3 &	 7.4 &	 5.9 &	 2.9 &	 0.0 \\ \hline 
-FM &	 0.0 &	 0.1 &	 0.0 &	 0.0 &	 0.0 \\ \hline 
-BPSK &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 14.3 \\ \hline 
-QAM &	 11.7 &	 28.6 &	 14.3 &	 14.3 &	 0.0 \\ \hline 
-QAM16 &	 15.3 &	 5.7 &	 14.3 &	 1.1 &	 0.0 \\ \hline 
-QAM64 &	 21.6 &	 22.7 &	 14.3 &	 14.3 &	 10.7 \\ \hline
+\begin{tabular}{ l | c | c | c | c | c | c } \hline
+SNR   &	 -3 &	 0 &	 3 &	 5 &	 10 &	 15\\ \hline \hline 
+AM &	 3.0 &	 2.7 &	 2.7 &	 0.7 &	 0.1 &	 0.0 \\ \hline 
+SSB &	 83.9 &	 68.0 &	 45.6 &	 10.0 &	 3.6 &	 0.7 \\ \hline 
+FM &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.0  \\ \hline 
+BPSK &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.0 \\ \hline 
+QAM &	 0.0 &	 0.0 &	 13.1 &	 14.3 &	 0.0 &	 0.0 \\ \hline 
+QAM16 &	 0.0 &	 0.0 &	 1.1 &	 0.0 &	 13.7 &	 0.0 \\ \hline 
+QAM64 &	 0.3 &	 14.9 &	 21.1 &	 28.9 &	 14.3 &	 9.6 \\ \hline
 \end{tabular}
 \label{tab:cumFalsePositive1000pt}
 \end{table}
@@ -98,15 +106,15 @@ QAM64 &	 21.6 &	 22.7 &	 14.3 &	 14.3 &	 10.7 \\ \hline
 \begin{table}
 \caption{Cumulant Results, Hits: 10,000 data Points}
 \centering
-\begin{tabular}{ l | c | c | c | c | c } \hline
-SNR &	 -3 &	 0 &	 3 &	 5 &	 10\\ \hline \hline 
-AM &	 52 &	 63 &	 93 &	 96 &	 100 \\ \hline 
- SSB &	 92 &	 94 &	 99 &	 100 &	 100 \\ \hline 
-FM &	 0 &	 40 &	 99 &	 100 &	 100 \\ \hline 
-BPSK &	 0 &	 0 &	 100 &	 100 &	 100 \\ \hline 
-QAM &	 0 &	 0 &	 0 &	 100 &	 100 \\ \hline 
-QAM16 &	 0 &	 0 &	 0 &	 0 &	 91 \\ \hline 
-QAM64 &	 0 &	 100 &	 100 &	 100 &	 100 \\ \hline
+\begin{tabular}{ l | c | c | c | c | c | c } \hline
+SNR   &	 -3 &	 0 &	 3 &	 5 &	 10 &	 15\\ \hline \hline 
+AM    &	 46 &	 61 &	 72 &	 83 &	 100 &	 100 \\ \hline 
+SSB   &	 54 &	 59 &	 62 &	 70 &	 93 &	 100 \\ \hline 
+FM    &	 0 &	 0 &	 0 &	 100 &	 100 &	 100 \\ \hline 
+BPSK  &	 0 &	 0 &	 0 &	 0 &	 100 &	 100 \\ \hline 
+QAM   &	 0 &	 0 &	 0 &	 0 &	 0 &	 100 \\ \hline 
+QAM16 &	 0 &	 0 &	 0 &	 0 &	 0 &	 0 \\ \hline 
+QAM64 &	 0 &	 0 &	 0 &	 100 &	 100 &	 100 \\ \hline 
 \end{tabular}
 \label{tab:cumHit10000pt}
 \end{table}
@@ -114,16 +122,224 @@ QAM64 &	 0 &	 100 &	 100 &	 100 &	 100 \\ \hline
 \begin{table}
 \caption{Cumulant Results, False Positives: 10,000 data Points}
 \centering
-\begin{tabular}{ l | c | c | c | c | c } \hline
-SNR &	 -3 &	 0 &	 3 &	 5 &	 10 \\ \hline \hline
-AM &	 1.1 &	 0.9 &	 0.1 &	 0.0 &	 0.0 \\ \hline 
- SSB &	 44.6 &	 5.3 &	 1.0 &	 0.6 &	 0.0 \\ \hline 
-FM &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.0 \\ \hline 
-BPSK &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.0 \\ \hline 
-QAM &	 14.3 &	 14.3 &	 0.0 &	 0.0 &	 0.0 \\ \hline 
-QAM16 &	 0.0 &	 2.6 &	 14.3 &	 0.0 &	 0.0 \\ \hline 
-QAM64 &	 19.4 &	 34.6 &	 14.4 &	 14.3 &	 1.3 \\ \hline
+\begin{tabular}{ l | c | c | c | c | c | c } \hline
+SNR   &	 -3 &	 0 &	 3 &	 5 &	 10 &	 15\\ \hline \hline 
+AM &	 6.6 &	 5.9 &	 5.4 &	 4.3 &	 1.0 &	 0.0 \\ \hline 
+SSB &	 79.1 &	 62.7 &	 46.7 &	 2.4 &	 0.0 &	 0.0 \\ \hline 
+FM &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.0  \\ \hline 
+BPSK &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.0 \\ \hline 
+QAM &	 0.0 &	 0.0 &	 14.3 &	 14.3 &	 0.0 &	 0.0 \\ \hline 
+QAM16 &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 14.3 &	 0.0 \\ \hline 
+QAM64 &	 0.0 &	 14.3 &	 14.4 &	 28.6 &	 14.3 &	 14.3 \\ \hline 
 \end{tabular}
 \label{tab:cumFalsePositive10000pt}
 \end{table}
- 
+
+\newpage
+\section{CycloStationary Method}
+
+There are many variables which can be modified when using the CycloStationary
+approach.  Time averaging, frequency averaging, FFT size, FFT overlap, windowing
+etc.  In this implementation, an FFT size of 128 is used to allow for a faster
+computation as well as a smaller CDP vector.  No FFT overlap is used however a
+hamming window is applied to the data to decrease the spectral leakage.  A total
+of 100 averages were taken which results in a total of 12,800 data points used
+per computation of the Cycle Spectrum.
+
+A bennefit to the Cyclostationary Method is it uses frequency domain information
+and hence does not require precise tuning or frequency/phase lock.  No down
+sampling or frequency shifting was used prior to computing the results.  If the
+signal had been frequency shifted, or had existed at a different frequency
+altogether, the Cycle Spectral Correlation plot would shift in the frequency
+axis but would remain identical on the alpha frequency axis.  This means that
+the Cyclostationary Method is also robust to Frequency Shifts when the Cycle
+Frequency Domain Profile vector is used as the classifier.
+
+Figures~\ref{fig:idealProfile_AM} through \ref{fig:idealCycle_QAM64} show the
+ideal plots for the Frequency Domain Profile and Cycle Spectral Correlation for
+each of the modulation schemes tested.  There is a stark difference between the
+plots for analog modulation and the digital QAM Modulations.  However there is 
+little to visually distinguish between QAM, QAM16, and QAM64.  While this may
+seem to indicate that this method will have poor performance it is important to
+realize that the additive white noise will not have as large an impact on the
+frquency domain profile as it would the cumulant's time domain classification.
+
+Table~\ref{tab:CycloHits} and ~\ref{tab:CycloFalsePos} show the results of the
+Cyclostationary classification technique.  The results are impressivly accurate
+however the amount of time required to compute the results was substantially higher than the
+cumulant method.  The Cumulant method took 45 seconds to run all tests using
+10,000 data points.  The CycloStionary Method took 2 1/2 hours using 12,800
+points.
+
+\begin{figure}
+\centering
+\begin{subfigure}{.49\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../img/Report_AM_Ia_Ideal.png}
+  \caption{ }
+  \label{fig:idealProfile_AM}
+\end{subfigure}
+\begin{subfigure}{.49\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../img/Report_AM_Sxa_Ideal.png}
+  \caption{ }
+  \label{fig:idealCycle_AM}
+\end{subfigure}
+\caption{Ideal Frequency Domain Profile (a) and Cycle Spectral Correlation (b)
+for Amplitude Modulation}
+\label{fig:test}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}
+\centering
+\begin{subfigure}{.49\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../img/Report_AM_Ia_Ideal.png}
+  \caption{ }
+\end{subfigure}
+\begin{subfigure}{.49\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../img/Report_AM_Sxa_Ideal.png}
+  \caption{ }
+\end{subfigure}
+\caption{Ideal Frequency Domain Profile (a) and Cycle Spectral Correlation (b)
+for Amplitude Modulation}
+\label{fig:IdealAMCyclo}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{subfigure}{.49\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../img/Report_SSB_Ia_Ideal.png}
+  \caption{ }
+\end{subfigure}
+\begin{subfigure}{.49\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../img/Report_SSB_Sxa_Ideal.png}
+  \caption{ }
+\end{subfigure}
+\caption{Ideal Frequency Domain Profile (a) and Cycle Spectral Correlation (b)
+for Single Side Band Modulation}
+\label{fig:IdealSSBCyclo}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{subfigure}{.49\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../img/Report_FM_Ia_Ideal.png}
+  \caption{ }
+\end{subfigure}
+\begin{subfigure}{.49\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../img/Report_FM_Sxa_Ideal.png}
+  \caption{ }
+\end{subfigure}
+\caption{Ideal Frequency Domain Profile (a) and Cycle Spectral Correlation (b)
+for Frequency Modulation}
+\label{fig:IdealFMCyclo}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{subfigure}{.49\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../img/Report_BPSK_Ia_Ideal.png}
+  \caption{ }
+\end{subfigure}
+\begin{subfigure}{.49\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../img/Report_BPSK_Sxa_Ideal.png}
+  \caption{ }
+\end{subfigure}
+\caption{Ideal Frequency Domain Profile (a) and Cycle Spectral Correlation (b)
+for Binary Phase Shift Keying Modulation}
+\label{fig:IdealBPSKCyclo}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\begin{subfigure}{.49\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../img/Report_QAM_Ia_Ideal.png}
+  \caption{ }
+\end{subfigure}
+\begin{subfigure}{.49\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../img/Report_QAM_Sxa_Ideal.png}
+  \caption{ }
+\end{subfigure}
+\caption{Ideal Frequency Domain Profile (a) and Cycle Spectral Correlation (b)
+for Quadrature Amplitude Modulation}
+\label{fig:IdealQAMCyclo}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{subfigure}{.49\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../img/Report_QAM16_Ia_Ideal.png}
+  \caption{ }
+\end{subfigure}
+\begin{subfigure}{.49\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../img/Report_QAM16_Sxa_Ideal.png}
+  \caption{ }
+\end{subfigure}
+\caption{Ideal Frequency Domain Profile (a) and Cycle Spectral Correlation (b)
+for 16-Quadrature Amplitude Modulation}
+\label{fig:IdealQAM16Cyclo}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{subfigure}{.49\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../img/Report_QAM64_Ia_Ideal.png}
+  \caption{ }
+\end{subfigure}
+\begin{subfigure}{.49\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../img/Report_QAM64_Sxa_Ideal.png}
+  \caption{ }
+\end{subfigure}
+\caption{Ideal Frequency Domain Profile (a) and Cycle Spectral Correlation (b)
+for 64-Quadrature Amplitude Modulation}
+\label{fig:IdealQAM64Cyclo}
+\end{figure}
+
+
+\begin{table}
+\caption{Frequency Domain Profile Results}
+\centering
+\begin{tabular}{ l | c | c | c | c | c | c } \hline
+SNR   &	 -3 &	 0 &	 3 &	 5 &	 10 &	 15\\ \hline \hline 
+AM    &	 100 &	 100 &	 100 &	 100 &	 100 &	 100 \\ \hline 
+ SSB   &	 0 &	 0 &	 0 &	 0 &	 0 &	 100 \\ \hline 
+FM    &	 0 &	 0 &	 0 &	 0 &	 100 &	 100 \\ \hline 
+BPSK  &	 0 &	 0 &	 0 &	 0 &	 2 &	 100 \\ \hline 
+QAM   &	 3 &	 23 &	 44 &	 76 &	 100 &	 100 \\ \hline 
+QAM16 &	 100 &	 100 &	 100 &	 100 &	 100 &	 100 \\ \hline 
+QAM64 &	 0 &	 0 &	 0 &	 2 &	 99 &	 100 \\ \hline 
+\end{tabular}
+\label{tab:CycloHits}
+\end{table}
+
+\begin{table}
+\caption{Frequency Domain Profile Results, False Positives}
+\centering
+\begin{tabular}{ l | c | c | c | c | c | c } \hline
+SNR   &	 -3 &	 0 &	 3 &	 5 &	 10 &	 15\\ \hline \hline 
+AM &	 28.6 &	 28.6 &	 28.6 &	 28.6 &	 14.3 &	 0.0 \\ \hline 
+ SSB &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.0 \\ \hline 
+FM &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.0  \\ \hline 
+BPSK &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.0 \\ \hline 
+QAM &	 0.3 &	 0.0 &	 0.0 &	 0.1 &	 0.1 &	 0.0 \\ \hline 
+QAM16 &	 42.1 &	 39.6 &	 36.6 &	 31.6 &	 14.0 &	 0.0 \\ \hline 
+QAM64 &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.0 \\ \hline
+\end{tabular}
+\label{tab:CycloFalsePos}
+\end{table}

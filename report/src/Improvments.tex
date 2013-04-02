@@ -5,3 +5,8 @@ Notes:
 The cumulant method is a hard decision classifier.  It would be pretty easy to
 determine the variance of the distribution based on SNR and create a soft
 decision classifier that would output the percentage chance of each modulation.
+
+In he gnuRadio version of the cumulant it's pretty cool to notice that although
+the cumulant method is phase invarient, it is not frequency invarient.  So you
+have to sample at exactly the right frequency, if you don't and thigns start to
+rotate, FM, BPSK, QAM all look like PSK(inf)!

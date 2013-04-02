@@ -1,7 +1,7 @@
 function [Sxa Ia] = mySxa(rawData, sampleType, Fc, Fs, BlockSize, maxAvg);
 % Make BlockSize 512 and maxCols 100
 
-doPlot = 1;
+doPlot = 0;
 
 numCols = min(floor(length(rawData)/BlockSize), maxAvg);
 dataBlock = reshape(rawData(1:BlockSize*numCols), BlockSize, numCols);
@@ -25,6 +25,8 @@ for alpha = -BlockSize:2:BlockSize
   end
 end
 
+S = Sxa(:, BlockSize/2+1);
+
 % alpha = 0 is pointless.
 Sxa(:, BlockSize/2+1) = [];
 
@@ -38,12 +40,13 @@ foAxis = linspace(Fc, Fc+Fs, BlockSize);
 if doPlot == 1
   figure; 
   surf(alphaAxis, foAxis, abs(Sxa)); 
-  title('Cycle Spectrum');
+  title('QAM64 Cycle Spectrum');
   xlabel('alpha (hz)');
   ylabel('freq (hz)');
-
+  
   figure;
   plot(alphaAxis, Ia);
   xlabel('alpha (hz)');
-  title('Mean Cycle Frequency Domain Profile');
+  title('QAM64 Cycle Frequency Domain Profile');
+
 end

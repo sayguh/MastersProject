@@ -1,32 +1,22 @@
-function M = testCyclo(input, SNR, Fc, Fs)
+function M = testCyclo(input, templates, SNR, Fc, Fs, sampleType, BlockSize, maxAvg)
 
+% The templates should be columns of ideal data to compare to
 % Add noise to the signal to the desired SNR
 noisySig = awgn(input, SNR, 'measured');
 
-[M C40 C42] = CycloClassifier(IQdata);
+[Sxa Ia] = mySxa(noisySig, sampleType, Fc, Fs, BlockSize, maxAvg);
 
-% Redistributing M so that:
-% AM = 1
-% SSB = 2
-% FM = 3
-% BPSK = 4
-% QAM = 5
-% 16QAM = 6
-% 64QAM = 7
+Ia = Ia / max(abs(Ia)); % Scale to unity.
 
-if M == -3
-  M = 1;
-elseif M == -2
-  M = 2;
-elseif M == -1
-  M = 3;
-elseif M == 2
-  M = 4;
-elseif M == 4
-  M = 5;
-elseif M == 16
-  M = 6;
-elseif M == 64
-  M = 7;
-end
+Ia = Ia(:); % Insure it's a Column Vector
 
+numTemplates = columns(templates);
+
+compareMatrix = kron(Ia, ones(1, numTemplates));
+
+% I never scaled the data points, need to do that when implementing in C++
+diffMatrix = (abs(compareMatrix) - abs(templates)).^2; % Subtract and square
+
+diffVector = sum(diffMatrix);
+
+[C M] = min(diffVector);

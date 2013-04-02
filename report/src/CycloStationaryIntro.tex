@@ -51,17 +51,7 @@ In practice, there is a trade off here.  We may either increase our time
 interval $T$ which is referred to as time smoothing, or smooth over the frequency
 domain by using a smaller Fourier transform size.
 
-Like most density functions, the SCD may be scaled to correlation
-coefficient that limits its domain to $[0,1]$. This is referred to as the
-spectral coherence (SC) and is defined in \ref{eq:specCohDef}.
-
-\begin{equation}
-C_{x}^{\alpha}(f) \triangleq \frac{S_x^{\alpha}(f)}{\sqrt{S(f+\alpha/2)S(f-\alpha/2)}}
-\label{eq:specCohDef}
-\end{equation}
-
-
-Both the SCD and SC form a 2 dimensional matrix which is often
+The SCD forms a two dimensional matrix which is often
 too large to use as a sensible modulation metric.  Instead, \cite{kim2007}
 proposes the concept of the Cycle Frequency Domain Profile (CDP) by taking the
 maximum value of the SC over the frequency domain.
@@ -72,15 +62,17 @@ I(\alpha) \triangleq \max_f |C_x^{\alpha}(f)|
 \end{equation}
 
 The cycle frequency domain profile of known signals can be created and compared
-to experimental results to determine the appropriate modulation type.
+to experimental results to determine the appropriate modulation type.  
+
+\begin{comment}
+This method is dumb, I should determine the number of peaks or something and
+compare peak location and size.
+\end{comment}
 
 
-
-This section needs more info about how the domain profile differs between each
-modulation type and how I plan to use that as a classifier.  Currently, QAM,
-BPSK, QAM16 and QAM64 look very similar with 3 spikes while FM, AM and SSB look
-somewhat similar with a constant CDP.  Need to investigate more.
-
-
-
+In the implementation of the CDP used in this paper, the mean is used rather
+than the max to provide a more robust metric.  The CDP is scaled such that the
+maximum value is equal to one and the CDP vector is compared to a template of
+known CDP values.  The smallest distance vector is used to determine the
+modulation type.
 
