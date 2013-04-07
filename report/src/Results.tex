@@ -1,4 +1,4 @@
-\section{Simulation Results}
+\section*{Simulation Results}
 
 Both methods were tested in Octave at -3dB, 0dB, 3dB, 5dB, 10dB, and 15dB SNR. 
 As test data, AM, Single Side Band AM, FM, BPSK, QAM, 16QAM, and 64QAM data was
@@ -9,7 +9,7 @@ of 2048Hz was used.  For the analog modulated signals, white noise was filtered
 to a bandwidth of 2048Hz as the input signal.  The FM frequency deviation was
 set to 50Hz.
 
-\subsection{Cumulant Method}
+\subsection*{Cumulant Simulation Results}
 
 While \cite{swami2000} does not cover FM Modulation, an FM signal in the IQ
 domain can be seen has a rotating phasor which given that the Cumulant Method is
@@ -145,10 +145,10 @@ QAM64 &	 0.0 &	 14.3 &	 14.4 &	 28.6 &	 14.3 &	 14.3 \\ \hline
 \label{tab:cumFalsePositive10000pt}
 \end{table}
 
-\begin{table}
+\begin{table*}
+\centering
 \caption{Classification at 3dB with 10,000 data points.  Left column indicates
 the input signal, column headers are the classification.}
-\centering
 \begin{tabular}{ l | c | c | c | c | c | c | c } \hline
       &  AM  &  SSB & FM & BPSK & QAM & QAM16 & QAM64 \\ \hline \hline 
 AM    &	 74 &	 26 &	 0 &	 0 &	 0 &	 0 &	 0 \\ \hline  
@@ -160,12 +160,12 @@ QAM16 &	 0 &	 99 &	 0 &	 0 &	 0 &	 0 &	 1 \\ \hline
 QAM64 &	 0 &	 100 &	 0 &	 0 &	 0 &	 0 &	 0 \\ \hline 
 \end{tabular}
 \label{tab:cumFalsePosTable3dB}
-\end{table}
+\end{table*}
 
-\begin{table}
+\begin{table*}
+\centering
 \caption{Classification at 10dB with 10,000 data points.  Left column indicates
 the input signal, column headers are the classification.}
-\centering
 \begin{tabular}{ l | c | c | c | c | c | c | c } \hline
       &  AM  &  SSB & FM & BPSK & QAM & QAM16 & QAM64 \\ \hline \hline 
 AM    &	 98 &	 2 &	 0 &	 0 &	 0 &	 0 &	 0 \\ \hline \hline 
@@ -177,10 +177,10 @@ QAM16 &	 0 &	 0 &	 0 &	 0 &	 0 &	 0 &	 100 \\ \hline
 QAM64 &	 0 &	 0 &	 0 &	 0 &	 0 &	 0 &	 100 \\ \hline 
 \end{tabular}
 \label{tab:cumFalsePosTable10dB}
-\end{table}
+\end{table*}
 
 \newpage
-\subsection{CycloStationary Method}
+\subsection*{Simulation CycloStationary Results}
 
 There are many variables which can be modified when using the CycloStationary
 approach.  Time averaging, frequency averaging, FFT size, FFT overlap, windowing
@@ -214,7 +214,7 @@ each signal at an SNR of 5dB.  Clearly, the classifier has no problem
 distinguishing between digital modulations and analog modulations however it
 consistantly missclassifies within those two groups.  
 
-\begin{figure}
+\begin{figure*}
 \centering
 \begin{subfigure}{.49\textwidth}
 \centering
@@ -229,9 +229,9 @@ consistantly missclassifies within those two groups.
 \caption{Ideal Frequency Domain Profile (a) and Cycle Spectral Correlation (b)
 for Amplitude Modulation}
 \label{fig:IdealAMCyclo}
-\end{figure}
+\end{figure*}
 
-\begin{figure}
+\begin{figure*}
 \centering
 \begin{subfigure}{.49\textwidth}
 \centering
@@ -246,9 +246,9 @@ for Amplitude Modulation}
 \caption{Ideal Frequency Domain Profile (a) and Cycle Spectral Correlation (b)
 for Single Side Band Modulation}
 \label{fig:IdealSSBCyclo}
-\end{figure}
+\end{figure*}
 
-\begin{figure}
+\begin{figure*}
 \centering
 \begin{subfigure}{.49\textwidth}
 \centering
@@ -263,9 +263,9 @@ for Single Side Band Modulation}
 \caption{Ideal Frequency Domain Profile (a) and Cycle Spectral Correlation (b)
 for Frequency Modulation}
 \label{fig:IdealFMCyclo}
-\end{figure}
+\end{figure*}
 
-\begin{figure}
+\begin{figure*}
 \centering
 \begin{subfigure}{.49\textwidth}
 \centering
@@ -280,10 +280,10 @@ for Frequency Modulation}
 \caption{Ideal Frequency Domain Profile (a) and Cycle Spectral Correlation (b)
 for Binary Phase Shift Keying Modulation}
 \label{fig:IdealBPSKCyclo}
-\end{figure}
+\end{figure*}
 
 
-\begin{figure}
+\begin{figure*}
 \centering
 \begin{subfigure}{.49\textwidth}
 \centering
@@ -298,9 +298,9 @@ for Binary Phase Shift Keying Modulation}
 \caption{Ideal Frequency Domain Profile (a) and Cycle Spectral Correlation (b)
 for Quadrature Amplitude Modulation}
 \label{fig:IdealQAMCyclo}
-\end{figure}
+\end{figure*}
 
-\begin{figure}
+\begin{figure*}
 \centering
 \begin{subfigure}{.49\textwidth}
 \centering
@@ -315,9 +315,9 @@ for Quadrature Amplitude Modulation}
 \caption{Ideal Frequency Domain Profile (a) and Cycle Spectral Correlation (b)
 for 16-Quadrature Amplitude Modulation}
 \label{fig:IdealQAM16Cyclo}
-\end{figure}
+\end{figure*}
 
-\begin{figure}
+\begin{figure*}
 \centering
 \begin{subfigure}{.49\textwidth}
 \centering
@@ -332,7 +332,7 @@ for 16-Quadrature Amplitude Modulation}
 \caption{Ideal Frequency Domain Profile (a) and Cycle Spectral Correlation (b)
 for 64-Quadrature Amplitude Modulation}
 \label{fig:IdealQAM64Cyclo}
-\end{figure}
+\end{figure*}
 
 
 \begin{table}
@@ -367,7 +367,7 @@ QAM64 &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.0 &	 0.0 \\ \hline
 \label{tab:CycloFalsePos}
 \end{table}
 
-\begin{table}
+\begin{table*}
 \caption{Classification at 5dB using Frequency Domain Profile.  Left column
 indicates the input signal, column headers are the classification.}
 \centering
@@ -382,4 +382,4 @@ QAM16 &	 0 &	 0 &	 0 &	 0 &	 0 &	 100 &	 0 \\ \hline
 QAM64 &	 0 &	 0 &	 0 &	 0 &	 0 &	 100 &	 0 \\ \hline  
 \end{tabular}
 \label{tab:cycloFalsePosTable5dB}
-\end{table}
+\end{table*}

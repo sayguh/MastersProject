@@ -1,11 +1,11 @@
-function [AMData SSBData FMData BPSKData QAMData QAM16Data QAM64Data] = testCycloMethod()
+function [AMOut SSBOut FMOut BPSKOut QAMOut QAM16Out QAM64Out] = testCycloMethod()
 printf('Testing CycloStationary Method....this could be a while\n\n');
 fflush(stdout);
 
 % Number of trials
 numTrials = 100;
-%snrArray = [-3 0 3 5 10 15];
-snrArray = 5;
+snrArray = [-3 0 3 5 10 15];
+%snrArray = 5;
 Fc = 0;
 Fs = 8192;
 sampleType = 'C';
@@ -63,7 +63,7 @@ printf('QAM   &\t %i &\t %i &\t %i &\t %i &\t %i &\t %i &\t %i \\\\ \\hline \\hl
 printf('QAM16 &\t %i &\t %i &\t %i &\t %i &\t %i &\t %i &\t %i \\\\ \\hline \\hline \n', QAM16Out(1,1), QAM16Out(1,2), QAM16Out(1,3), QAM16Out(1,4), QAM16Out(1,5), QAM16Out(1,6), QAM16Out(1,7));
 printf('QAM64 &\t %i &\t %i &\t %i &\t %i &\t %i &\t %i &\t %i \\\\ \\hline \\hline \n', QAM64Out(1,1), QAM64Out(1,2), QAM64Out(1,3), QAM64Out(1,4), QAM64Out(1,5), QAM64Out(1,6), QAM64Out(1,7));
 
-return;
+%return;
 
 
 

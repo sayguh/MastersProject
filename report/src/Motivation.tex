@@ -1,4 +1,4 @@
-\section{Motivation}
+\section*{Motivation}
 
 The Software Defined Radio (SDR) hobby community has generally rallied around
 the Universal Software Radio Peripheral (USRP) however the costs of a USRP can
@@ -7,8 +7,8 @@ application.  This has prevented wide adoption among the more novice or budget
 focused developer. In early 2012 a Linux kernel developer, Antti Palosaari, found
 that the RTL2832U chipset within a low cost USB DVB-T tuner
 could be used as a simple SDR.  Due to their low cost, \$12 to \$20, a
-small community has cropped up and begun development of GnuRadio blocks, REDHAWK
-devices and applications using this hardware.
+small community has cropped up and begun development of GnuRadio blocks, and
+applications using this hardware.
 
 The RTL2832U chipset is found in a variety of tuner models and provide a range
 of tunable frequencies.
@@ -16,7 +16,8 @@ Table~\ref{tab:ModelAndFreq} shows the supported hardware models and
 corresponding frequency ranges.  The RTL2832U (RTL-SDR) chipset outputs 8-bit
 I/Q samples and can support sample rates as high as 2.4 MS/s without dropping samples.  
 
-\begin{table}
+\begin{table*}
+\centering
 \caption{Tuner Model and Frequency Range Supported}
 \begin{tabular}{| l | l |} \hline
 Tuner	& Frequency range \\ \hline
@@ -27,11 +28,11 @@ Fitipower FC0012 &	22 - 948.6 MHz \\ \hline
 FCI FC2580	& 146 - 308 MHz and 438 - 924 MHz \\ \hline
 \end{tabular}
 \label{tab:ModelAndFreq}
-\end{table}
+\end{table*}
 
 In the past, people have been able to use the RTL2832U to successfully
 receive and decode broadcast FM and air traffic AM radio, TETRA, MGR, GSM, ADS-B
-and POCSAG.  This investigation intends to determine its use for signal
+and POCSAG.  This investigation intends to determine its use for blind signal
 identification and classification, a challenging task due to its low signal to
 noise ratio, high DC bias, and relatively low sample resolution.  Two
 modulation detection methods are proposed, one determining the modulation
@@ -43,6 +44,6 @@ within a GnuRadio for testing with the hardware.
 
 The long term goal and motivation for this project is to create a REDHAWK C++
 component along with a RTL-SDR Device and run a domain consisting of multiple
-RTL-SDR Devices so that identification and possibly rough geolocation 
+RTL-SDR Devices so that identification and possibly rough location 
 estimation may occur through a network of low cost RTL-SDRs.
 

@@ -5,7 +5,7 @@ rawData = rawData / max(rawData);
 
 % Make BlockSize 512 and maxCols 100
 
-doPlot = 1;
+doPlot = 0;
 
 numCols = min(floor(length(rawData)/BlockSize), maxAvg);
 dataBlock = reshape(rawData(1:BlockSize*numCols), BlockSize, numCols);
