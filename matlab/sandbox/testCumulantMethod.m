@@ -44,6 +44,14 @@ QAMOut =  cumQAMData;
 QAM16Out = cumQAM16Data;
 QAM64Out = cumQAM64Data;
 
+printf('AM    &\t %i &\t %i &\t %i &\t %i &\t %i &\t %i &\t %i \\\\ \\hline \\hline \n', AMOut(1,1), AMOut(1,2), AMOut(1,3), AMOut(1,4), AMOut(1,5), AMOut(1,6), AMOut(1,7));
+printf('SSB   &\t %i &\t %i &\t %i &\t %i &\t %i &\t %i &\t %i \\\\ \\hline \\hline \n', SSBOut(1,1), SSBOut(1,2), SSBOut(1,3), SSBOut(1,4), SSBOut(1,5), SSBOut(1,6), SSBOut(1,7));
+printf('FM    &\t %i &\t %i &\t %i &\t %i &\t %i &\t %i &\t %i \\\\ \\hline \\hline \n', FMOut(1,1), FMOut(1,2), FMOut(1,3), FMOut(1,4), FMOut(1,5), FMOut(1,6), FMOut(1,7));
+printf('BPSK  &\t %i &\t %i &\t %i &\t %i &\t %i &\t %i &\t %i \\\\ \\hline \\hline \n', BPSKOut(1,1), BPSKOut(1,2), BPSKOut(1,3), BPSKOut(1,4), BPSKOut(1,5), BPSKOut(1,6), BPSKOut(1,7));
+printf('QAM   &\t %i &\t %i &\t %i &\t %i &\t %i &\t %i &\t %i \\\\ \\hline \\hline \n', QAMOut(1,1), QAMOut(1,2), QAMOut(1,3), QAMOut(1,4), QAMOut(1,5), QAMOut(1,6), QAMOut(1,7));
+printf('QAM16 &\t %i &\t %i &\t %i &\t %i &\t %i &\t %i &\t %i \\\\ \\hline \\hline \n', QAM16Out(1,1), QAM16Out(1,2), QAM16Out(1,3), QAM16Out(1,4), QAM16Out(1,5), QAM16Out(1,6), QAM16Out(1,7));
+printf('QAM64 &\t %i &\t %i &\t %i &\t %i &\t %i &\t %i &\t %i \\\\ \\hline \\hline \n', QAM64Out(1,1), QAM64Out(1,2), QAM64Out(1,3), QAM64Out(1,4), QAM64Out(1,5), QAM64Out(1,6), QAM64Out(1,7));
+
 return;
 
 

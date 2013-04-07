@@ -5,7 +5,7 @@ rawData = rawData / max(rawData);
 
 % Make BlockSize 512 and maxCols 100
 
-doPlot = 0;
+doPlot = 1;
 
 numCols = min(floor(length(rawData)/BlockSize), maxAvg);
 dataBlock = reshape(rawData(1:BlockSize*numCols), BlockSize, numCols);
@@ -34,7 +34,7 @@ S = Sxa(:, BlockSize/2+1);
 % alpha = 0 is pointless.
 Sxa(:, BlockSize/2+1) = [];
 
-Ia = mean(abs(Sxa));
+Ia = max(abs(Sxa));
 alphaAxis = linspace(-Fs/2, Fs/2, BlockSize);
 foAxis = linspace(Fc, Fc+Fs, BlockSize);
 
