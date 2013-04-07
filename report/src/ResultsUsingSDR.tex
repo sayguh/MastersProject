@@ -3,7 +3,7 @@
 Both the Cumulant method and the Cyclostationary method were rewritten in C++
 and placed into a gnuRadio block for use with the RTL-SDR receiver.  Without a
 method of generating signals, commonly known signal sources had to be used for
-experiementation.  Known signals that are within the frequency range of
+experimentation.  Known signals that are within the frequency range of
 the receiver included FM Broadcasts and the BPSK modulated RDS data.
 
 Figure~\ref{fig:SignalOfInterest} shows an averaged Frequency Spectrum from the
@@ -23,7 +23,7 @@ digital HD Radio data.
 \subsection*{RTL-SDR Cumulant Results}
 
 Time domain classification of unknown signals presents multiple problems
-for the implementor.  In simulations, the exact frequency, phase, symbol rate,
+for the implementer.  In simulations, the exact frequency, phase, symbol rate,
 and matched filter of the signal is known.  Without this prior knowledge, or the
 means of detecting it, blind modulation detection from the time domain becomes a
 difficult task.
@@ -33,13 +33,13 @@ frequency shifted, filtered, and decimated.  Since no phase lock loop was used,
 it is expected that the frequency of the signal of interest will be slightly
 different than the tuned frequency.  This will result in a continually rotating
 IQ plane.
-Earlier it was stated that the Cumulant method was phase invarient however this
+Earlier it was stated that the Cumulant method was phase invariant however this
 only applies to a static phase shift and not a continuous rotation.  Without a phase
 lock loop, the IQ plane of FM, BPSK, and QAM will be indistinguishable and
 resemble a circle with added noise.
 AM, SSB-AM, and higher order QAM signals which would not form a single circle in
 the IQ domain may still be able to be identified but signal sources of this type
-within the frquency range of the RTL-SDR are difficult to find.
+within the frequency range of the RTL-SDR are difficult to find.
 Figure~\ref{fig:digitalIQ}a shows the spectrum of the digital signal to the
 left of the FM station.  This signal was tuned, filtered, and decimated to
 isolate the digital signal.  The IQ plot of this data, shown in
@@ -50,7 +50,7 @@ correctly and instead classifies it as an AM signal with $C40 = 0.07$ and $C42 =
 
 The same process was used to tune, filter, and decimate the FM signal source. 
 Despite the clearer IQ plot, due to the higher SNR and shown in
-Figure~\ref{fig:FMPlots}, the FM signal is also missclassified as AM with $C40 = 0.021$ and $C42 =  0.535$.
+Figure~\ref{fig:FMPlots}, the FM signal is also miss-classified as AM with $C40 = 0.021$ and $C42 =  0.535$.
 
 \begin{figure*}
 \centering
@@ -95,8 +95,8 @@ frequency deviation and input bandwidth for FM and AM sources.
 Modulation classification using the previous made templates could not be
 expected to do well.  Not only will the unknown variables cause issue but the templates
 assumed the signal was the only signal present which is not the case in real the
-world.  Filtering out the other signals would be a possiblity but it would also
-greatly reduce the noise floor compared to the noisefloor of the template
+world.  Filtering out the other signals would be a possibility but it would also
+greatly reduce the noise floor compared to the noise floor of the template
 causing additional problems.
 
 Rather than use the cyclostationary detection methods for identification of a
@@ -105,7 +105,7 @@ generated using a known signal and the cyclostationary method should be used to
 identify similar signals throughout the spectrum.  
 
 To obtain a spectral template of an FM signal with digital RDS data, the signal
-was centered at 88.5Mhz, filtered to 600khz and downsampled by a factor of four.
+was centered at 88.5Mhz, filtered to 600khz and down sampled by a factor of four.
 Figure~\ref{fig:decimatedFMandDig} shows the resulting signal. 
 Figure~\ref{fig:cycleSpec885} shows the Cycle Spectral Correlation and the cycle
 domain profile.

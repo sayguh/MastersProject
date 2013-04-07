@@ -34,17 +34,17 @@ sampled.
 Based on the observed simulated results, the Cumulant method performs fairly
 well with limited data points.  The algorithm tends to favor the higher modulation
 scheme of QAM64 when given an amplitude modulated data set and a large number of
-data points.  The Cumulant method has the most difficulty with the QAM16 dataset
+data points.  The Cumulant method has the most difficulty with the QAM16 data set
 and would regularly classify it as QAM64.
 Table~\ref{tab:cumFalsePosTable3dB} shows how each input signal was classified
 at an SNR of 3dB with $10,000$ data points used.  At low SNR values, the
 classifier has difficulty distinguishing between AM and SSB-AM, confusing one
 for the other about 25\% of the time.
-The FM data is strongly missclassified as SSB while the digital modulations get
-mistaken for higher order digital moduatlations as well as SSB. 
+The FM data is strongly miss-classified as SSB while the digital modulations get
+mistaken for higher order digital modulations as well as SSB. 
 Table~\ref{tab:cumFalsePosTable10dB} shows the results when the SNR is increased
-from 3dB to 10dB.  The missclassification between AM and SSB-AM decreases to
-about 4\% but the missclassification between the digital modulations is still
+from 3dB to 10dB.  The miss-classification between AM and SSB-AM decreases to
+about 4\% but the miss-classification between the digital modulations is still
 present.  
 
 \begin{table}
@@ -180,9 +180,9 @@ QAM64 &	 0 &	 0 &	 0 &	 0 &	 0 &	 0 &	 100 \\ \hline
 \end{table*}
 
 \newpage
-\subsection*{Simulation CycloStationary Results}
+\subsection*{Simulation Cyclostationary Results}
 
-There are many variables which can be modified when using the CycloStationary
+There are many variables which can be modified when using the Cyclostationary
 approach.  Time averaging, frequency averaging, FFT size, FFT overlap, windowing
 etc.  In this implementation, an FFT size of 128 is used to allow for a faster
 computation as well as a smaller CDP vector.  No FFT overlap is used however a
@@ -190,7 +190,7 @@ hamming window is applied to the data to decrease the spectral leakage.  A total
 of 100 averages were taken which results in a total of 12,800 data points used
 per computation of the Cycle Spectrum.
 
-A bennefit to the Cyclostationary Method is it uses frequency domain information
+A benefit to the Cyclostationary Method is it uses frequency domain information
 and hence does not require precise tuning or frequency/phase lock.  No down
 sampling or frequency shifting was used prior to computing the results.  If the
 signal had been frequency shifted, or had existed at a different frequency
@@ -212,7 +212,7 @@ poorly trying to distinguish between the digital modulations.
 Table~\ref{tab:cycloFalsePosTable5dB} shows how the classifier chose to classify
 each signal at an SNR of 5dB.  Clearly, the classifier has no problem
 distinguishing between digital modulations and analog modulations however it
-consistantly missclassifies within those two groups.  
+consistently miss-classifies within those two groups.  
 
 \begin{figure*}
 \centering
