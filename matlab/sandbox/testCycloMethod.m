@@ -1,10 +1,11 @@
-function testCycloMethod()
+function [AMData SSBData FMData BPSKData QAMData QAM16Data QAM64Data] = testCycloMethod()
 printf('Testing CycloStationary Method....this could be a while\n\n');
 fflush(stdout);
 
 % Number of trials
 numTrials = 100;
-snrArray = [-3 0 3 5 10 15];
+%snrArray = [-3 0 3 5 10 15];
+snrArray = 10;
 Fc = 0;
 Fs = 8192;
 sampleType = 'C';

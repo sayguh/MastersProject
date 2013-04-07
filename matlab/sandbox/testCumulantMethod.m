@@ -1,8 +1,9 @@
-function testCumulantMethod()
+function [AMOut SSBOut FMOut BPSKOut QAMOut QAM16Out QAM64Out] = testCumulantMethod()
 
 % Number of trials
 numTrials = 100;
-snrArray = [-3 0 3 5 10 15];
+%snrArray = [-3 0 3 5 10 15];
+snrArray = 10;
 numPoints = 40000;
 Fc = 2048;
 Fs = 8192;
@@ -33,6 +34,19 @@ for j = 1:length(snrArray)
     cumQAM64Data(j, testCumulant(dataSet.QAM64data(1:numPoints), snrArray(j), Fc, Fs)) += 1;
   end
 end
+
+
+AMOut = cumAMData;
+SSBOut = cumSSBData; 
+FMOut = cumFMData;
+BPSKOut = cumBPSKData;
+QAMOut =  cumQAMData;
+QAM16Out = cumQAM16Data;
+QAM64Out = cumQAM64Data;
+
+return;
+
+
 
 printf('----- Cumulant Results -----\n');
 printf('SNR   &\t -3 &\t 0 &\t 3 &\t 5 &\t 10 &\t 15\\\\ \\hline \\hline \n');

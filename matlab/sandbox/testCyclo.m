@@ -6,7 +6,7 @@ noisySig = awgn(input, SNR, 'measured');
 
 [Sxa Ia] = mySxa(noisySig, sampleType, Fc, Fs, BlockSize, maxAvg);
 
-Ia = Ia / max(abs(Ia)); % Scale to unity.
+%Ia = Ia / max(abs(Ia)); % Scale to unity.
 
 Ia = Ia(:); % Insure it's a Column Vector
 

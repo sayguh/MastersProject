@@ -1,4 +1,8 @@
 function [Sxa Ia] = mySxa(rawData, sampleType, Fc, Fs, BlockSize, maxAvg);
+
+%Scale incoming data
+rawData = rawData / max(rawData);
+
 % Make BlockSize 512 and maxCols 100
 
 doPlot = 0;
@@ -40,13 +44,13 @@ foAxis = linspace(Fc, Fc+Fs, BlockSize);
 if doPlot == 1
   figure; 
   surf(alphaAxis, foAxis, abs(Sxa)); 
-  title('QAM64 Cycle Spectrum');
+  title('Cycle Spectrum');
   xlabel('alpha (hz)');
   ylabel('freq (hz)');
   
   figure;
   plot(alphaAxis, Ia);
   xlabel('alpha (hz)');
-  title('QAM64 Cycle Frequency Domain Profile');
+  title('Cycle Frequency Domain Profile');
 
 end

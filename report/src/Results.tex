@@ -155,42 +155,16 @@ axis but would remain identical on the alpha frequency axis.  This means that
 the Cyclostationary Method is also robust to Frequency Shifts when the Cycle
 Frequency Domain Profile vector is used as the classifier.
 
-Figures~\ref{fig:idealProfile_AM} through \ref{fig:idealCycle_QAM64} show the
+Figures~\ref{fig:IdealAMCyclo} through \ref{fig:IdealQAM64Cyclo} show the
 ideal plots for the Frequency Domain Profile and Cycle Spectral Correlation for
 each of the modulation schemes tested.  There is a stark difference between the
 plots for analog modulation and the digital QAM Modulations.  However there is 
-little to visually distinguish between QAM, QAM16, and QAM64.  While this may
-seem to indicate that this method will have poor performance it is important to
-realize that the additive white noise will not have as large an impact on the
-frquency domain profile as it would the cumulant's time domain classification.
+little to visually distinguish between QAM, QAM16, and QAM64.  
 
 Table~\ref{tab:CycloHits} and ~\ref{tab:CycloFalsePos} show the results of the
-Cyclostationary classification technique.  The results are impressivly accurate
-however the amount of time required to compute the results was substantially higher than the
-cumulant method.  The Cumulant method took 45 seconds to run all tests using
-10,000 data points.  The CycloStionary Method took 2 1/2 hours using 12,800
-points.
+Cyclostationary classification technique.  As expected, the classifier performs
+poorly trying to distinguish between the digital modulations.
 
-\begin{figure}
-\centering
-\begin{subfigure}{.49\textwidth}
-\centering
-\includegraphics[width=\linewidth]{../img/Report_AM_Ia_Ideal.png}
-  \caption{ }
-  \label{fig:idealProfile_AM}
-\end{subfigure}
-\begin{subfigure}{.49\textwidth}
-  \centering
-  \includegraphics[width=\linewidth]{../img/Report_AM_Sxa_Ideal.png}
-  \caption{ }
-  \label{fig:idealCycle_AM}
-\end{subfigure}
-\caption{Ideal Frequency Domain Profile (a) and Cycle Spectral Correlation (b)
-for Amplitude Modulation}
-\label{fig:test}
-\end{figure}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}
 \centering
 \begin{subfigure}{.49\textwidth}
