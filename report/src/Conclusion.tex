@@ -1,0 +1,17 @@
+\section{Conclusion}
+
+We have shown that both cyclostationary detection and fourth-order cumulant
+statistics can be used as a means of modulation classification given idealized
+conditions. Both methods were tested in varying levels of SNR, using simulation
+data in Octave and were able to identify differences between AM, Single Side Band AM, FM, BPSK, QAM, 16QAM, and 64QAM. 
+When the RTL hardware receiver was used, the cumulant method was found to be
+phase invariant but still required precise frequency synchronization due to its
+use of time domain statistics.  In order for the cumulant method to prove
+useful in a real life application, a frequency synchronization block must be
+implemented and placed prior to the cumulant classifier.  The cyclostationary
+approach used frequency domain statistics and did not need frequency or phase
+synchronization but was unable to identify modulation characteristics using
+the RTL hardware samples without using prior knowledge of the signals spectrum
+as a template.  The real life spectral shapes different from those of the
+simulation due to unknown modulation parameters such as roll off factors,
+frequency division, and  matched filtering.

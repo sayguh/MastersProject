@@ -1,4 +1,4 @@
-\section*{Simulation Results}
+\section{Simulation Results}
 
 Both methods were tested in Octave at -3dB, 0dB, 3dB, 5dB, 10dB, and 15dB SNR. 
 As test data, AM, Single Side Band AM, FM, BPSK, QAM, 16QAM, and 64QAM data was
@@ -9,16 +9,16 @@ of 2048Hz was used.  For the analog modulated signals, white noise was filtered
 to a bandwidth of 2048Hz as the input signal.  The FM frequency deviation was
 set to 50Hz.
 
-\subsection*{Cumulant Simulation Results}
+\subsection{Cumulant Simulation Results}
 
 While \cite{swami2000} does not cover FM Modulation, an FM signal in the IQ
 domain can be seen has a rotating phasor which given that the Cumulant Method is
 phase invariant should result in the classification of M-PSK signal with M
 approaching infinity.  
 For the AM and SSB AM, data with an SNR of 1000dB was sent through the
-classifier to determine the theoretical values of $|C40|$ and $C42$.  For AM,
-$|C40|$ and $C42$ were $0.040723$ while SSB data had $|C40| = 0.079237$ and
-$C42 = 0$.
+classifier to determine the theoretical values of $|C_{40}|$ and $C_{42}$.  For AM,
+$|C_{40}|$ and $C_{42}$ were $0.040723$ while SSB data had $|C_{40}| = 0.079237$ and
+$C_{42} = 0$.
 The cumulant algorithm works in the time domain and assumes that the signal of
 interest has been shifted to baseband.  Prior to running each of the data sets
 through the cumulant algorithm, the signal was first frequency shifted to
@@ -180,7 +180,7 @@ QAM64 &	 0 &	 0 &	 0 &	 0 &	 0 &	 0 &	 100 \\ \hline
 \end{table*}
 
 \newpage
-\subsection*{Simulation Cyclostationary Results}
+\subsection{Simulation Cyclostationary Results}
 
 There are many variables which can be modified when using the Cyclostationary
 approach.  Time averaging, frequency averaging, FFT size, FFT overlap, windowing
