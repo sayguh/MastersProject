@@ -16,20 +16,6 @@ Table~\ref{tab:ModelAndFreq} shows the supported hardware models and
 corresponding frequency ranges.  The RTL2832U (RTL-SDR) chipset outputs 8-bit
 I/Q samples and can support sample rates as high as 2.4 MS/s without dropping samples.  
 
-\begin{table*}
-\centering
-\caption{Tuner Model and Frequency Range Supported}
-\begin{tabular}{| l | l |} \hline
-Tuner	& Frequency range \\ \hline
-Elonics E4000	& 52 - 1100 Mhz and 1250 - 2200 MHz 1250 MHz \\ \hline
-Rafael Micro R820T &	24 - 1766 MHz \\ \hline
-Fitipower FC0013 & 22 - 1100 MHz  \\ \hline
-Fitipower FC0012 &	22 - 948.6 MHz \\ \hline
-FCI FC2580	& 146 - 308 MHz and 438 - 924 MHz \\ \hline
-\end{tabular}
-\label{tab:ModelAndFreq}
-\end{table*}
-
 In the past, people have been able to use the RTL2832U to successfully
 receive and decode broadcast FM and air traffic AM radio, TETRA, MGR, GSM, ADS-B
 and POCSAG.  This investigation intends to determine its use for blind signal
@@ -42,8 +28,22 @@ is done in Octave and tested with a controlled simulated input.
 After characterizing the algorithms they have been converted into C++ code
 within a GnuRadio for testing with the hardware. 
 
-The long term goal and motivation for this project is to create a REDHAWK C++
-component along with a RTL-SDR Device and run a domain consisting of multiple
-RTL-SDR Devices so that identification and possibly rough location 
-estimation may occur through a network of low cost RTL-SDRs.
+The long term goal and motivation for this project is to create a
+distributed software defined radio system consisting of multiple RTL-SDR
+devices so that identification and possibly rough location estimation may occur
+through a network of low cost receivers.
 
+
+\begin{table*}[h]
+\centering
+\caption{Tuner Model and Frequency Range Supported}
+\begin{tabular}{| l | l |} \hline
+Tuner	& Frequency range \\ \hline
+Elonics E4000	& 52 - 1100 Mhz and 1250 - 2200 MHz 1250 MHz \\ \hline
+Rafael Micro R820T &	24 - 1766 MHz \\ \hline
+Fitipower FC0013 & 22 - 1100 MHz  \\ \hline
+Fitipower FC0012 &	22 - 948.6 MHz \\ \hline
+FCI FC2580	& 146 - 308 MHz and 438 - 924 MHz \\ \hline
+\end{tabular}
+\label{tab:ModelAndFreq}
+\end{table*}
